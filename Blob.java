@@ -48,5 +48,15 @@ public class Blob
         f.getParentFile().mkdirs(); 
         f.createNewFile();
     }
-
+    public String fileToString() throws IOException
+    {
+        BufferedReader br = new BufferedReader(new FileReader("hash.txt"));
+        StringBuilder sb = new StringBuilder();
+        while (br.ready())
+        {
+            sb.append(br.read());
+        }
+        br.close();
+        return sb.toString();
+    }
 }
