@@ -1,15 +1,33 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Blob
 {
-    public static String encryptThisString(String input)
+    public static String reader(String inputFile) throws IOException
     {
+        File file = new File(inputFile);
+        StringBuilder str = new StringBuilder();
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        while (br.ready())
+        {
+            str.append((char)br.read());
+        }
+        br.close();
+        return str.toString();
+    }
+    public static String encryptThisString(String input) throws IOException
+    {
+        String inputHash = reader(input);
         try {
             // getInstance() method is called with algorithm SHA-1
             MessageDigest md = MessageDigest.getInstance("SHA-1");
@@ -17,7 +35,7 @@ public class Blob
             // digest() method is called
             // to calculate message digest of the input string
             // returned as array of byte
-            byte[] messageDigest = md.digest(input.getBytes());
+            byte[] messageDigest = md.digest(inputHash.getBytes());
  
             // Convert byte array into signum representation
             BigInteger no = new BigInteger(1, messageDigest);
@@ -42,11 +60,12 @@ public class Blob
     public void writeToObjects(String in) throws IOException
     {
         String hash = encryptThisString(in);
-        String path = "Users/wyatt/Documents/GitHub/Objects" + File.separator + hash + File.separator + "hash.txt";
-        // Use relative path for Unix systems
-        File f = new File(path);
-        f.getParentFile().mkdirs(); 
-        f.createNewFile();
+        String directPath = "objects/" + File.separator + File.separator + hash;
+        Path directoryPathing = Paths.get(directPath);
+        Files.createDirectories(directoryPathing);
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(directPath))){
+            bw.write(hash);
+        }
     }
     public String fileToString() throws IOException
     {
