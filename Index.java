@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Index {
     private static HashMap<String, String> hMap = new HashMap<>();
@@ -23,14 +24,36 @@ public class Index {
     public static void addBlob(String fileName) throws IOException
     {
         init();
+        if (hMap.containsKey(fileName))
+        {
+            return;
+        }
         String hash = Blob.encryptThisString(fileName);
         if (hash != null)
         {
             hMap.put(fileName, hash);
         }
-        BufferedWriter bw = new BufferedWriter(new FileWriter("index", true));
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter("index", true))){
         bw.write(fileName + " : " + hash);
-        bw.write("\n");
-        bw.close();
+        bw.newLine();
+    } catch (IOException e){
+        e.printStackTrace();
+    }
+    }
+    public static void removeBlob(String fileName) throws IOException
+    {
+        if (hMap.containsKey(fileName))
+        {
+            hMap.remove(fileName);
+        }
+        try( BufferedWriter bw = new BufferedWriter(new FileWriter("index"))){
+        for (Map.Entry<String, String> keys : hMap.entrySet())
+        {
+            bw.write(keys.getKey() + " : " + keys.getValue());
+            bw.newLine();
+        }
+    } catch(IOException e){
+        e.printStackTrace();
+    }
     }
 }

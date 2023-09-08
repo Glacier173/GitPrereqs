@@ -5,6 +5,7 @@ public class main {
     {
         Index.init();
         Index.addBlob("testFile.txt");
+        //Index.removeBlob("testFile.txt");
     }
    
     
