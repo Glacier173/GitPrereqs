@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class Index {
-    private static HashMap<String, String> hMap;
+    private static HashMap<String, String> hMap=  new HashMap<>();
 
     public static void init() throws IOException {
         hMap = new HashMap<>();
@@ -67,6 +67,7 @@ public class Index {
     }
 
     public static void removeBlob(String fileName) throws IOException {
+        init();
         if (hMap.containsKey(fileName)) {
             hMap.remove(fileName);
         }
