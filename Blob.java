@@ -13,6 +13,24 @@ import java.security.NoSuchAlgorithmException;
 
 public class Blob
 {
+    public Blob(String path) throws IOException
+    {
+        File file = new File(path);
+        StringBuilder str = new StringBuilder();
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        while (br.ready())
+        {
+            str.append((char)br.read());
+        }
+        br.close();
+        String hash = encryptThisString(str.toString());
+        String directPath = "objects/" + File.separator + File.separator + hash;
+        Path directoryPathing = Paths.get(directPath);
+        Files.createDirectories(directoryPathing);
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(directPath))){
+            bw.write(hash);
+        }
+    }
     public static String reader(String inputFile) throws IOException
     {
         File file = new File(inputFile);
@@ -55,16 +73,6 @@ public class Blob
         // For specifying wrong message digest algorithms
         catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
-        }
-    }
-    public void writeToObjects(String in) throws IOException
-    {
-        String hash = encryptThisString(in);
-        String directPath = "objects/" + File.separator + File.separator + hash;
-        Path directoryPathing = Paths.get(directPath);
-        Files.createDirectories(directoryPathing);
-        try(BufferedWriter bw = new BufferedWriter(new FileWriter(directPath))){
-            bw.write(hash);
         }
     }
     public String fileToString() throws IOException
