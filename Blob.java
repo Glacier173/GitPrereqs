@@ -75,9 +75,9 @@ public class Blob
             throw new RuntimeException(e);
         }
     }
-    public String fileToString() throws IOException
+    public String fileToString(String fileName) throws IOException
     {
-        BufferedReader br = new BufferedReader(new FileReader("hash.txt"));
+        BufferedReader br = new BufferedReader(new FileReader(fileName));
         StringBuilder sb = new StringBuilder();
         while (br.ready())
         {
