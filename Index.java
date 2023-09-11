@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -14,6 +15,17 @@ public class Index {
     public static void init() throws IOException {
         hMap = new HashMap<>();
         File file = new File("index");
+        File dir = new File("objects");
+        if (file.exists())
+        {
+            file.delete();
+        }
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+        if (!dir.isDirectory()) {
+            dir.mkdir();
+        }
         String str = fileToString("index");
         Scanner sc = new Scanner(str);
         while (sc.hasNextLine())
@@ -27,14 +39,7 @@ public class Index {
             }
         }
         sc.close();
-        File dir = new File("objects");
 
-        if (!file.isFile()) {
-            file.createNewFile();
-        }
-        if (!dir.isDirectory()) {
-            dir.mkdir();
-        }
     }
     public static String fileToString(String fileName) throws IOException
     {
@@ -48,9 +53,10 @@ public class Index {
         return sb.toString();
     }
     public static void addBlob(String fileName) throws IOException {
-        init();
         if (!hMap.containsKey(fileName)) {
             String hash = Blob.encryptThisString(fileName);
+            String contents = Blob.reader(fileName);
+            writer(contents, "objects/" + hash);
             if (hash != null) {
                 hMap.put(fileName, hash);
             }
@@ -65,9 +71,14 @@ public class Index {
                 System.out.println("File" + fileName + " already exists in the index");
         }
     }
+    public static void writer(String str, String file) throws IOException
+    {
+        PrintWriter pw = new PrintWriter(file);
+        pw.print(str);
+        pw.close();
+    }
 
     public static void removeBlob(String fileName) throws IOException {
-        init();
         if (hMap.containsKey(fileName)) {
             hMap.remove(fileName);
         }
