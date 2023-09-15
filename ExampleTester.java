@@ -51,12 +51,6 @@ public class ExampleTester {
     }
 
     @Test
-    @DisplayName("Testing adding blobs")
-    void testAdd() throws Exception {
-
-    }
-
-    @Test
     @DisplayName("Test if adding a blob works. Check file contents")
     void testCreateBlob() throws Exception {
         File file = new File(tempDir.toFile(), "test.txt");
@@ -68,15 +62,28 @@ public class ExampleTester {
         File blobFile = new File("objects/" + blob.encryptThisString(fill));
         assertTrue(blobFile.exists());
 
-        // Read the content of the Blob
         String blobbed = Blob.reader("objects/" + blob.encryptThisString(fill));
 
-        // Verify that the file contents are the same between the original and Blob'd
-        // file
         assertEquals(file, blobbed);
-
-        // Clean up the temporary files (optional, depending on your needs)
         file.delete();
         blobFile.delete();
+    }
+
+    @Test
+    @DisplayName("Test if removing a blob works. Check file removal from index and objects")
+    void testRemoveBlob() throws Exception {
+        File file = new File(tempDir.toFile(), "test.txt");
+        String fill = "testing";
+        Files.write(file.toPath(), fill.getBytes());
+
+        Index.addBlob(file.getAbsolutePath());
+        Index.removeBlob(file.getAbsolutePath());
+
+        String inside = Index.fileToString("index");
+        assertFalse(inside.contains("test.txt"));
+
+        File object = new File("objects/" + Blob.encryptThisString(file.getAbsolutePath()));
+        assertFalse(object.exists());
+        file.delete();
     }
 }
