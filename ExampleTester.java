@@ -1,5 +1,6 @@
 
 import static org.junit.Assert.*;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -13,6 +14,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class ExampleTester {
+    @TempDir
+    static Path tempDir;
 
     @BeforeAll
     static void setUpBeforeClass() throws Exception {
@@ -40,35 +43,40 @@ public class ExampleTester {
 
         Index.init();
 
-        // check if the file exists
-        File file = new File("index");
-        Path path = Paths.get("objects");
-
         assertTrue(file.exists());
-        assertTrue(Files.exists(path));
+
+        File objects = new File("objetcs");
+
+        assertTrue(objects.exists() && objects.isDirectory());
+    }
+
+    @Test
+    @DisplayName("Testing adding blobs")
+    void testAdd() throws Exception {
+
     }
 
     @Test
     @DisplayName("Test if adding a blob works. Check file contents")
     void testCreateBlob() throws Exception {
+        File file = new File(tempDir.toFile(), "test.txt");
+        String fill = "testing";
+        Files.write(file.toPath(), fill.getBytes());
 
-        File file = new File("index");
+        Blob blob = new Blob(file.getAbsolutePath());
 
-        try {
-            Blob b = new Blob("index");
-            int encryptedd = b.hashCode();
+        File blobFile = new File("objects/" + blob.encryptThisString(fill));
+        assertTrue(blobFile.exists());
 
-        } catch (Exception e) {
-            System.out.println("An error occurred: " + e.getMessage());
-        }
+        // Read the content of the Blob
+        String blobbed = Blob.reader("objects/" + blob.encryptThisString(fill));
 
-        // Check blob exists in the objects folder
-        File file_junit1 = new File("objects/" + encryptThisString(file.getName()));
-        assertTrue("Blob file to add not found", file_junit1.exists());
+        // Verify that the file contents are the same between the original and Blob'd
+        // file
+        assertEquals(file, blobbed);
 
-        // Read file contents
-        String indexFileContents = MyUtilityClass.readAFileToAString("objects/" + file1.methodToGetSha1());
-        assertEquals("File contents of Blob don't match file contents pre-blob creation", indexFileContents,
-                file1.getContents());
+        // Clean up the temporary files (optional, depending on your needs)
+        file.delete();
+        blobFile.delete();
     }
 }
