@@ -4,10 +4,10 @@ import java.io.PrintWriter;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
-public class tree {
+public class Tree {
     private StringBuilder sb;
 
-    public tree() {
+    public Tree() {
         sb = new StringBuilder();
     }
 
@@ -47,6 +47,10 @@ public class tree {
         scan.close();
         sb = sbtwo;
 
+    }
+
+    public String getTree() {
+        return sb.toString();
     }
 
 }
