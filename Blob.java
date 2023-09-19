@@ -12,8 +12,13 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Blob {
-    public Blob(String path) throws IOException {
-        File file = new File(path);
+    private Path filePath;
+    private String name;
+    private byte[] fileData;
+    private String sha;
+
+    public Blob(File file) throws IOException {
+        System.out.println("File exists: " + file.exists());
         StringBuilder str = new StringBuilder();
         BufferedReader br = new BufferedReader(new FileReader(file));
         while (br.ready()) {
@@ -21,18 +26,31 @@ public class Blob {
         }
         br.close();
         String hash = encryptThisString(str.toString());
-        String directPath = "objects/" + File.separator + File.separator + hash;
-        Path directoryPathing = Paths.get(directPath);
-        Files.createDirectories(directoryPathing);
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(directPath))) {
-            bw.write(hash);
-        }
+        String folder = "objects";
+        this.filePath = Paths.get(folder, hash);
+        // Files.createDirectories(directoryPathing);
+        // File blob = new File(filePath, hash);
+        Files.write(this.filePath, (str.toString()).getBytes());
+        this.fileData = (str.toString()).getBytes();
+        // System.out.println("Blob exists: " + blob.exists());
+        // System.out.println("Blob exists: " + blob.getAbsolutePath());
+        // try (BufferedWriter bw = new BufferedWriter(new FileWriter(blob))) {
+        // bw.write(str.toString());
+        // }
     }
 
-    public static String reader(String inputFile) throws IOException {
-        File file = new File(inputFile);
+    public Path getPath() {
+        return filePath;
+    }
+
+    public byte[] getFileData() {
+        return fileData;
+    }
+
+    public static String reader(Path inputFile) throws IOException {
         StringBuilder str = new StringBuilder();
-        BufferedReader br = new BufferedReader(new FileReader(file));
+        // BufferedReader br = new BufferedReader(file);
+        BufferedReader br = Files.newBufferedReader(inputFile);
         while (br.ready()) {
             str.append((char) br.read());
         }
@@ -41,7 +59,7 @@ public class Blob {
     }
 
     public static String encryptThisString(String input) throws IOException {
-        String inputHash = reader(input);
+        // String inputHash = reader(input);
         try {
             // getInstance() method is called with algorithm SHA-1
             MessageDigest md = MessageDigest.getInstance("SHA-1");
@@ -49,7 +67,7 @@ public class Blob {
             // digest() method is called
             // to calculate message digest of the input string
             // returned as array of byte
-            byte[] messageDigest = md.digest(inputHash.getBytes());
+            byte[] messageDigest = md.digest(input.getBytes());
 
             // Convert byte array into signum representation
             BigInteger no = new BigInteger(1, messageDigest);
