@@ -10,14 +10,13 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class Index {
-    private static HashMap<String, String> hMap=  new HashMap<>();
+    private static HashMap<String, String> hMap = new HashMap<>();
 
     public static void init() throws IOException {
         hMap = new HashMap<>();
         File file = new File("index");
         File dir = new File("objects");
-        if (file.exists())
-        {
+        if (file.exists()) {
             file.delete();
         }
         if (!file.exists()) {
@@ -28,11 +27,9 @@ public class Index {
         }
         String str = fileToString("index");
         Scanner sc = new Scanner(str);
-        while (sc.hasNextLine())
-        {
+        while (sc.hasNextLine()) {
             String line = sc.nextLine();
-            if (!line.isEmpty())
-            {
+            if (!line.isEmpty()) {
                 String fileName = line.split(" : ")[0];
                 String hash = line.split(" : ")[1];
                 hMap.put(fileName, hash);
@@ -41,17 +38,17 @@ public class Index {
         sc.close();
 
     }
-    public static String fileToString(String fileName) throws IOException
-    {
+
+    public static String fileToString(String fileName) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(fileName));
         StringBuilder sb = new StringBuilder();
-        while (br.ready())
-        {
-            sb.append((char)br.read());
+        while (br.ready()) {
+            sb.append((char) br.read());
         }
         br.close();
         return sb.toString();
     }
+
     public static void addBlob(String fileName) throws IOException {
         if (!hMap.containsKey(fileName)) {
             String hash = Blob.encryptThisString(fileName);
@@ -66,13 +63,12 @@ public class Index {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-        else{
-                System.out.println("File" + fileName + " already exists in the index");
+        } else {
+            System.out.println("File" + fileName + " already exists in the index");
         }
     }
-    public static void writer(String str, String file) throws IOException
-    {
+
+    public static void writer(String str, String file) throws IOException {
         PrintWriter pw = new PrintWriter(file);
         pw.print(str);
         pw.close();

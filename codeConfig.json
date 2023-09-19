@@ -1,0 +1,105 @@
+[
+    {
+        "className": "Blob",
+        "parameterTypes": [
+            "String"
+        ],
+        "constructorConfigs": [
+            {
+                "values": [
+                    "./path/to/file.txt"
+                ]
+            }
+        ],
+        "methodConfigs": [
+            {
+                "methodName": "add",
+                "parameters": [
+                    "fileName"
+                ],
+                "values": [
+                    "__TEST_FILE_NAME__"
+                ]
+            },
+            {
+                "methodName": "reader",
+                "parameters": [
+                    "inputFile"
+                ],
+                "values": [
+                    "./path/to/input.txt"
+                ]
+            },
+            {
+                "methodName": "encryptThisString",
+                "parameters": [
+                    "input"
+                ],
+                "values": [
+                    "./path/to/encryptedInput.txt"
+                ]
+             },
+             {
+                    "methodName": "fileToString",
+                    "parameters": [
+                        "fileName"
+                    ],
+                    "values": [
+                        "./path/to/somefile.txt"
+                    ]
+             }
+        ]
+    },
+    {
+        "className": "Index",
+        "parameterTypes": [
+            "String"
+        ], 
+        "constructorConfigs": [],
+        "methodConfigs": [
+            {
+                "methodName": "init",
+                "parameters": [],
+                "values": []
+            },
+            {
+                "methodName": "addBlob",
+                "parameters": [
+                    "fileName"
+                ],
+                "values": [
+                    "sampleFileName.txt"
+                ]
+            },
+            {
+                "methodName": "fileToString",
+                "parameters": [
+                    "fileName"
+                ],
+                "values": [
+                    "sampleFileName.txt"
+                ]
+            },
+            {
+                "methodName": "writer",
+                "parameters": [
+                    "str",
+                    "file"
+                ],
+                "values": [
+                    "sampleString",
+                    "sampleFile.txt"
+                ]
+            },
+            {
+                "methodName": "removeBlob",
+                "parameters": [
+                    "fileName"
+                ],
+                "values": [
+                    "sampleFileName.txt"
+                ]
+            }
+        ]
+    }
+]
