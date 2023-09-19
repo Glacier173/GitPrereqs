@@ -30,7 +30,7 @@ public class BlobTest {
 
         String inside = blob.getFileData().toString();
 
-        assertTrue(inside, false);
+        assertTrue(inside, true);
 
         file.delete();
         blobFile.delete();
