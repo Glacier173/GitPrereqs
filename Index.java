@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -52,7 +54,8 @@ public class Index {
     public static void addBlob(String fileName) throws IOException {
         if (!hMap.containsKey(fileName)) {
             String hash = Blob.encryptThisString(fileName);
-            String contents = Blob.reader(fileName);
+            Path p = Paths.get(fileName);
+            String contents = Blob.reader(p);
             writer(contents, "objects/" + hash);
             if (hash != null) {
                 hMap.put(fileName, hash);
