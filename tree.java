@@ -3,6 +3,7 @@ import java.util.*;
 import java.io.PrintWriter;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.io.IOException;
 
 public class Tree {
     private StringBuilder sb;
@@ -16,6 +17,10 @@ public class Tree {
         PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("./objects/" + file)));
         pw.print(file.toString());
         pw.close();
+    }
+
+    public String getSha() throws IOException {
+        return Blob.encryptThisString(sb.toString());
     }
 
     public void add(String string) {
