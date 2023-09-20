@@ -24,8 +24,12 @@ public class Commit {
         PrintWriter pw = new PrintWriter(new FileWriter("commit"));
         pw.println(sha);
 
+        //print location
 
-        //printdate
+        //print empty line
+        pw.println();
+
+        //print date
         pw.println(getDate());
 
         //print name
