@@ -1,27 +1,112 @@
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Formatter;
 
 public class Commit {
     
-    public Commit() {
+    public Commit(String fileName, String author, String summary) throws IOException {
         File objects = new File("./objects");
         if (!objects.exists())
             objects.mkdirs();
-    }
+        
+        String sha = createTree();
 
-    //creates Tree and writes its sha, prev location sha, next location sha, name, date, and summary to a file in objects
-    public void writeFile(String fileName) {
-        Tree tree = new Tree();
-        String sha = tree.getSha();
+        File commit = new File("commit");
 
-        String dirName = "./objects/";
-        File dir = new File (dirName);
-        File commit = new File(dir,"commit");
-
+        //print sha
         PrintWriter pw = new PrintWriter(new FileWriter("commit"));
         pw.println(sha);
+
+
+        //printdate
+        pw.println(getDate());
+
+        //print name
+        pw.println(author);
+
+        //print summary
+        pw.print(summary);
+
+        pw.close();
+
+        rename(commit);
+    }
+
+    public String createTree() {
+        Tree tree = new Tree();
+        String sha = tree.getSha();
+        return sha;
+    }
+
+    public String getDate() {
+        return "";
+    }
+
+    public void rename(File fileName) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(fileName));
+        String str = "";
+
+        while(br.ready()) {
+            str += br.readLine()+"\n";
+        }
+        str = str.trim();//get rid of extra line
+
+        br.close();
+
+        //converting to sha1
+
+        String sha1 = encryptPassword(str);
+
+        //printing to objects folder
+        String dirName = "./objects/";
+        File dir = new File (dirName);
+        File newFile = new File (dir, sha1);
+
+        PrintWriter pw = new PrintWriter(newFile);
+
+        pw.print(str);
+
+        pw.close();
+    }
+
+    private String encryptPassword(String password)
+    {
+        String sha1 = "";
+        try
+        {
+            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+            crypt.reset();
+            crypt.update(password.getBytes("UTF-8"));
+            sha1 = byteToHex(crypt.digest());
+        }
+        catch(NoSuchAlgorithmException e)
+        {
+            e.printStackTrace();
+        }
+        catch(UnsupportedEncodingException e)
+        {
+            e.printStackTrace();
+        }
+        return sha1;
+    }
+
+    private String byteToHex(final byte[] hash)
+    {
+        Formatter formatter = new Formatter();
+        for (byte b : hash)
+        {
+            formatter.format("%02x", b);
+        }
+        String result = formatter.toString();
+        formatter.close();
+        return result;
     }
 
 }
