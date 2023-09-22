@@ -7,11 +7,13 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Formatter;
 
 public class Commit {
     
-    public Commit(String fileName, String author, String summary) throws IOException {
+    public Commit(String prevCommit, String nextCommit, String author, String summary) throws IOException {
         File objects = new File("./objects");
         if (!objects.exists())
             objects.mkdirs();
@@ -25,9 +27,12 @@ public class Commit {
         pw.println(sha);
 
         //print location
+        String prevSha = encryptPassword("prevCommit");
+        pw.println(prevSha);
 
         //print empty line
-        pw.println();
+        String nextSha = encryptPassword("nextCommit");
+        pw.println(nextSha);
 
         //print date
         pw.println(getDate());
@@ -43,23 +48,31 @@ public class Commit {
         rename(commit);
     }
 
-    public String createTree() {
+    public String createTree() throws IOException {
         Tree tree = new Tree();
         String sha = tree.getSha();
         return sha;
     }
 
     public String getDate() {
-        return "";
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+        return timeStamp;
     }
 
     public void rename(File fileName) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(fileName));
         String str = "";
 
-        while(br.ready()) {
+        /*while(br.ready()) {
             str += br.readLine()+"\n";
+        }*/
+
+        for(int i=1; i<=6; i++) {
+            if(i!=3) {
+                str += br.readLine()+"\n";
+            }
         }
+
         str = str.trim();//get rid of extra line
 
         br.close();
