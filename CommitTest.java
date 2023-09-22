@@ -15,10 +15,11 @@ public class CommitTest {
     @Test
     void testConstructor() throws IOException {
         Commit testCom = new Commit("732d12f7e4f2e629e2954acbb720c32c0be985d1", null, "Bob", "this is a test");
+        String sha = testCom.getSha();
 
         String dirName = "./objects/";
         File dir = new File (dirName);
-        File check = new File(dir,"76a77319fcb1f9662189048e62b50012e1aee06b");
+        File check = new File(dir,sha);
 
         //how do i check if time keeps changing?
         assertTrue(check.exists());

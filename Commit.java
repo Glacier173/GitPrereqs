@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.util.Calendar;
 import java.util.Formatter;
 
 public class Commit {
+    private File commit;
     
     public Commit(String prevCommit, String nextCommit, String author, String summary) throws IOException {
         File objects = new File("./objects");
@@ -20,7 +22,7 @@ public class Commit {
         
         String sha = createTree();
 
-        File commit = new File("commit");
+        commit = new File("commit");
 
         //print sha
         PrintWriter pw = new PrintWriter(new FileWriter("commit"));
@@ -59,7 +61,7 @@ public class Commit {
         return timeStamp;
     }
 
-    private void rename(File fileName) throws IOException {
+    private String getContents(File fileName) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(fileName));
         String str = "";
 
@@ -76,6 +78,33 @@ public class Commit {
         str = str.trim();//get rid of extra line
 
         br.close();
+        return str;
+    }
+
+    public String getSha() throws IOException {
+        String str = getContents(commit);
+        return encryptPassword(str);
+    }
+
+    private void rename(File fileName) throws IOException {
+        /*BufferedReader br = new BufferedReader(new FileReader(fileName));
+        String str = "";
+
+        while(br.ready()) {
+            str += br.readLine()+"\n";
+        }
+
+        for(int i=1; i<=6; i++) {
+            if(i!=3) {
+                str += br.readLine()+"\n";
+            }
+        }
+
+        str = str.trim();//get rid of extra line
+
+        br.close();*/
+
+        String str = getContents(fileName);
 
         //converting to sha1
 
