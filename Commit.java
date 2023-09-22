@@ -59,7 +59,7 @@ public class Commit {
         return timeStamp;
     }
 
-    public void rename(File fileName) throws IOException {
+    private void rename(File fileName) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(fileName));
         String str = "";
 

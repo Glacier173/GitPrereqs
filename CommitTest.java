@@ -1,6 +1,10 @@
-import static org.junit.Assert.assertTrue;
+//import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -9,8 +13,15 @@ import org.junit.jupiter.api.Test;
 public class CommitTest {
 
     @Test
-    void testConstructor() {
+    void testConstructor() throws IOException {
+        Commit testCom = new Commit("732d12f7e4f2e629e2954acbb720c32c0be985d1", null, "Bob", "this is a test");
 
+        String dirName = "./objects/";
+        File dir = new File (dirName);
+        File check = new File(dir,"76a77319fcb1f9662189048e62b50012e1aee06b");
+
+        //how do i check if time keeps changing?
+        assertTrue(check.exists());
     }
 
     @Test
@@ -22,15 +33,11 @@ public class CommitTest {
         assertTrue(sha.equals(expectedSha));
     }
 
-    @Test
+    /*@Test
     void testGetDate() {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
         //um how do i test if the time keeps changing
         assertTrue(timeStamp.equals("20230921_195130"));
-    }
+    }*/
 
-    @Test
-    void testRename() {
-        
-    }
 }
