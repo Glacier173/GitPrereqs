@@ -33,7 +33,7 @@ public class TreeTest {
     @Test
     @DisplayName("Test if adding works")
     void addTest() throws Exception {
-        Tree todd = new Tree();
+        tree todd = new tree();
         todd.add("tree : bd1ccec139dead5ee0d8c3a0499b42a7d43ac44b");
         todd.add("blob : 81e0268c84067377a0a1fdfb5cc996c93f6dcf9f : file1.txt");
         assertTrue("Incorrectly added", todd.getTree().contains("tree : bd1ccec139dead5ee0d8c3a0499b42a7d43ac44b")
@@ -43,7 +43,7 @@ public class TreeTest {
     @Test
     @DisplayName("Test if writing works")
     void writeTest() throws Exception {
-        Tree todd = new Tree();
+        tree todd = new tree();
         todd.add("tree : bd1ccec139dead5ee0d8c3a0499b42a7d43ac44b");
         todd.add("blob : 81e0268c84067377a0a1fdfb5cc996c93f6dcf9f : file1.txt");
         String sha = Blob.encryptThisString(todd.getTree());
@@ -66,7 +66,7 @@ public class TreeTest {
     @Test
     @DisplayName("Test if remove works")
     void removeTest() throws Exception {
-        Tree todd = new Tree();
+        tree todd = new tree();
         todd.add("tree : bd1ccec139dead5ee0d8c3a0499b42a7d43ac44b");
         todd.add("blob : 81e0268c84067377a0a1fdfb5cc996c93f6dcf9f : file1.txt");
 

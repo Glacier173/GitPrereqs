@@ -33,7 +33,8 @@ public class IndexTest {
 
     @Test
     void testInit() throws Exception {
-        Index.init();
+        Index index = new Index();
+        index.init();
         assertTrue(new File("index").exists());
     }
 

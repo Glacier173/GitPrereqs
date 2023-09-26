@@ -14,7 +14,7 @@ import java.util.Scanner;
 public class Index {
     private static HashMap<String, String> hMap = new HashMap<>();
 
-    public static void init() throws IOException {
+    public void init() throws IOException {
         hMap = new HashMap<>();
         File file = new File("index");
         File dir = new File("objects");
