@@ -2,6 +2,7 @@ import java.util.Scanner;
 import java.util.*;
 import java.io.PrintWriter;
 import java.math.BigInteger;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.io.BufferedWriter;
@@ -18,11 +19,16 @@ public class tree {
     }
 
     public void writeToFile() throws Exception {
-        String file = Blob.encryptThisString(sb.toString());
+        /*String file = Blob.encryptThisString(sb.toString());
         holdTreeForAddDirectory = Blob.encryptThisString(sb.toString());
         PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("./objects/" + file)));
         pw.print(file.toString());
-        pw.close();
+        pw.close();*/
+        String fileSHA1 = Blob.encryptThisString(sb.toString());
+        String filePath = "./objects/" + fileSHA1;
+        try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(filePath)))) {
+            pw.print(sb.toString());
+        }
     }
 
     public String getSha() throws IOException {
@@ -81,7 +87,7 @@ public class tree {
             String hashtext = no.toString(16);
 
             // Add preceding 0s to make it 32 bit
-            while (hashtext.length() < 32) {
+            while (hashtext.length() < 40) {
                 hashtext = "0" + hashtext;
             }
 
@@ -94,29 +100,39 @@ public class tree {
         }
     }
 
-    public String addDirectory(String directoryPath) throws IOException
+    public String addDirectory(String directoryPath) throws Exception
     {
         File rootDir = new File(directoryPath);
-        Index index = new Index();
-        index.init();
-        tree tree = new tree();
-        for (String file : rootDir.list())
+        if (!rootDir.exists())
         {
-            String pathToFile = directoryPath + "/" + file;
-            File f = new File(pathToFile);
+            throw new IOException ("This Directory pathing doesn't exist");
+        }
+        if (!rootDir.canRead())
+        {
+            throw new IOException ("Invalid Directory pathing");
+        }
+        tree mainTree = new tree();
+        for (String fileDir : rootDir.list())
+        {
+            //String pathToFile = directoryPath + "/" + file;
+            File f = new File(rootDir, fileDir);
             if (f.isFile())
             {
-                index.addBlob(pathToFile); //Here I'm not adding "f" because its a file, so I need to add the path which is a String
-                tree.add("blob : " + index.fileToString(encryptThisString(pathToFile)) + " : " + file);
+                String filePath = f.getAbsolutePath();
+                String fileName = f.getName();
+                String shaOfFile = Blob.encryptThisString(Blob.reader(Paths.get(filePath)));
+                mainTree.add("blob : " + shaOfFile + " : " + fileName);
             }
             else if (f.isDirectory())
             {
-                index.addBlob(pathToFile);
-                tree.add("blob : " + tree.addDirectory(pathToFile) + " : " + file);
+                String dirPath = f.getAbsolutePath();
+                String dirName = f.getName();
+                tree childTree = new tree();
+                String shaOfSubDir = childTree.addDirectory(dirPath);
+                mainTree.add("tree : " + shaOfSubDir + " : " + dirName);
             }
         }
-        String shaOfTreeDir = holdTreeForAddDirectory;
-        return shaOfTreeDir;
+        mainTree.writeToFile();
+        return mainTree.getSha();
     }
-
 }

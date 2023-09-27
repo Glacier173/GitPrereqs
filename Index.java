@@ -41,7 +41,7 @@ public class Index {
 
     }
 
-    public static String fileToString(String fileName) throws IOException {
+    public String fileToString(String fileName) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(fileName));
         StringBuilder sb = new StringBuilder();
         while (br.ready()) {
@@ -51,7 +51,7 @@ public class Index {
         return sb.toString();
     }
 
-    public static void addBlob(String fileName) throws IOException {
+    public void addBlob(String fileName) throws IOException {
         if (!hMap.containsKey(fileName)) {
             String hash = Blob.encryptThisString(fileName);
             Path p = Paths.get(fileName);

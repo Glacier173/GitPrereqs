@@ -47,10 +47,10 @@ public class Blob {
         return fileData;
     }
 
-    public static String reader(Path inputFile) throws IOException {
+    public static String reader(Path p) throws IOException {
         StringBuilder str = new StringBuilder();
         // BufferedReader br = new BufferedReader(file);
-        BufferedReader br = Files.newBufferedReader(inputFile);
+        BufferedReader br = Files.newBufferedReader(p);
         while (br.ready()) {
             str.append((char) br.read());
         }
@@ -75,7 +75,7 @@ public class Blob {
             String hashtext = no.toString(16);
 
             // Add preceding 0s to make it 32 bit
-            while (hashtext.length() < 32) {
+            while (hashtext.length() < 40) {
                 hashtext = "0" + hashtext;
             }
 
