@@ -114,21 +114,23 @@ public class tree {
         tree mainTree = new tree();
         for (String fileDir : rootDir.list())
         {
+            System.out.println(fileDir);
             //String pathToFile = directoryPath + "/" + file;
             File f = new File(rootDir, fileDir);
             if (f.isFile())
             {
-                String filePath = f.getAbsolutePath();
+                String filePath = f.getPath();
                 String fileName = f.getName();
                 String shaOfFile = Blob.encryptThisString(Blob.reader(Paths.get(filePath)));
                 mainTree.add("blob : " + shaOfFile + " : " + fileName);
             }
             else if (f.isDirectory())
             {
-                String dirPath = f.getAbsolutePath();
+                String dirPath = f.getPath();
                 String dirName = f.getName();
                 tree childTree = new tree();
                 String shaOfSubDir = childTree.addDirectory(dirPath);
+
                 mainTree.add("tree : " + shaOfSubDir + " : " + dirName);
             }
         }

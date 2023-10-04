@@ -61,6 +61,16 @@ public class Commit {
         return timeStamp;
     }
 
+    public String getLineOne(Commit com) throws IOException
+    {
+        String path = "./objects/" + com.getSha();
+        File file = new File (path);
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String ret = br.readLine();
+        br.close();
+        return ret;
+    }
+
     private String getContents(File fileName) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(fileName));
         String str = "";
