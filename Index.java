@@ -54,30 +54,22 @@ public class Index {
 
     public void addBlob(String fileName) throws Exception {
         File f = new File(fileName);
-        if(f.isFile())
-        {
-            if (!hMap.containsKey(fileName)) {
-                //Blob b = new Blob(f);
-                StringBuilder sb = new StringBuilder();
-                BufferedReader br = new BufferedReader(new FileReader(f));
-                while (br.ready())
-                {
-                    sb.append((char)br.read());
-                }
-                br.close();
-                String hash = Blob.encryptThisString(sb.toString());
-                hMap.put(fileName, hash);
-            } else {
-                System.out.println("File" + fileName + " already exists in the index");
-            }
-        }
         if (f.isDirectory())
         {
-            if (!mapForDirs.containsKey(fileName))
+            Tree tree = new Tree();
+            mapForDirs.put(fileName, tree.addDirectory(fileName));
+        }
+        if(f.isFile())
+        {
+            StringBuilder sb = new StringBuilder();
+            BufferedReader br = new BufferedReader(new FileReader(f));
+            while (br.ready())
             {
-                Tree mainTree = new Tree();
-                mapForDirs.put(fileName, mainTree.addDirectory(fileName));
+                sb.append((char)br.read());
             }
+            br.close();
+            String hash = Blob.encryptThisString(sb.toString());
+            hMap.put(fileName, hash);
         }
         writeInd();
     }
@@ -86,11 +78,11 @@ public class Index {
         FileWriter fw = new FileWriter("./index");
         for (String file : hMap.keySet())
         {
-            fw.write("Blob : " + hMap.get(file) + " : " + file + "\n");
+            fw.write("blob : " + hMap.get(file) + " : " + file + "\n");
         }
         for (String dir : mapForDirs.keySet())
         {
-            fw.write("Tree : " + mapForDirs.get(dir) + " : " + dir + "\n");
+            fw.write("tree : " + mapForDirs.get(dir) + " : " + dir + "\n");
         }
         fw.close();
     }
