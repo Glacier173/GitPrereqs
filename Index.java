@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 public class Index {
     private static HashMap<String, String> hMap = new HashMap<>();
-    private static HashMap<String, String> mapForDirs = new HashMap();
+    private static HashMap<String, String> mapForDirs = new HashMap<>();
 
     public void init() throws IOException {
         hMap = new HashMap<>();
@@ -76,6 +76,8 @@ public class Index {
 
     public static void writeInd() throws IOException {
         FileWriter fw = new FileWriter("./index");
+        Index ind = new Index();
+        Commit com = new Commit();
         for (String file : hMap.keySet())
         {
             fw.write("blob : " + hMap.get(file) + " : " + file + "\n");
@@ -85,6 +87,9 @@ public class Index {
             fw.write("tree : " + mapForDirs.get(dir) + " : " + dir + "\n");
         }
         fw.close();
+        Tree tree = new Tree();
+        FileWriter fw2 = new FileWriter(tree.getSha());
+        fw2.write(ind.fileToString("./index"));
     }
 
     public void removeBlob(String fileName) throws IOException {

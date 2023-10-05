@@ -15,7 +15,7 @@ import java.util.Formatter;
 public class Commit {
     private File commit;
     
-    public Commit(String prevCommit, String nextCommit, String author, String summary) throws IOException {
+    public Commit(String prevCommitSha, String author, String summary) throws IOException {
         File objects = new File("./objects");
         if (!objects.exists())
             objects.mkdirs();
@@ -29,12 +29,10 @@ public class Commit {
         pw.println(sha);
 
         //print location
-        String prevSha = encryptPassword("prevCommit");
-        pw.println(prevSha);
+        pw.println(prevCommitSha);
 
         //print empty line
-        String nextSha = encryptPassword("nextCommit");
-        pw.println(nextSha);
+        pw.println();
 
         //print date
         pw.println(getDate());

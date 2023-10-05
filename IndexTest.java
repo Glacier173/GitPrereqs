@@ -36,21 +36,11 @@ public class IndexTest {
     {
         File file = new File("Folder");
         file.mkdir();
-        //File f1 = new File("./Folder/" + "file1");
-        //f1.createNewFile();
-        //FileWriter fw = new FileWriter(f1);
-        //fw.write("abcdef");
-        //fw.close();
-        //File f2 = new File("./Folder/" + "file2");
-        //f2.createNewFile();
-        //FileWriter fw2 = new FileWriter(f2);
-        //fw2.write("ghijkl");
-        //fw2.close();
         Index ind = new Index();
         ind.addBlob("Folder");
         String ret = ind.fileToString("index");
         System.out.println(ret);
-        assertTrue(ret.equals("tree : da39a3ee5e6b4b0d3255bfef95601890afd80709 : Folder"));
+        assertTrue(ret.equals("tree : da39a3ee5e6b4b0d3255bfef95601890afd80709 : Folder" + "\n"));
     }
 
 

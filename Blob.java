@@ -93,7 +93,7 @@ public class Blob {
         BufferedReader br = new BufferedReader(new FileReader(fileName));
         StringBuilder sb = new StringBuilder();
         while (br.ready()) {
-            sb.append(br.read());
+            sb.append((char)(br.read()));
         }
         br.close();
         return sb.toString();
