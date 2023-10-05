@@ -10,11 +10,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class tree {
+public class Tree {
     private StringBuilder sb;
     private String holdTreeForAddDirectory;
 
-    public tree() {
+    public Tree() {
         sb = new StringBuilder();
     }
 
@@ -111,7 +111,7 @@ public class tree {
         {
             throw new IOException ("Invalid Directory pathing");
         }
-        tree mainTree = new tree();
+        Tree mainTree = new Tree();
         for (String fileDir : rootDir.list())
         {
             System.out.println(fileDir);
@@ -128,7 +128,7 @@ public class tree {
             {
                 String dirPath = f.getPath();
                 String dirName = f.getName();
-                tree childTree = new tree();
+                Tree childTree = new Tree();
                 String shaOfSubDir = childTree.addDirectory(dirPath);
 
                 mainTree.add("tree : " + shaOfSubDir + " : " + dirName);

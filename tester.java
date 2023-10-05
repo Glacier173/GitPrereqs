@@ -16,7 +16,7 @@ public class tester {
 
 
         //test
-        tree tree = new tree();
+        Tree tree = new Tree();
         String sha = tree.getSha();
         System.out.println("SHA: " + sha);
 

@@ -26,7 +26,7 @@ public class Blob {
         }
         br.close();
         String hash = encryptThisString(str.toString());
-        String folder = "objects";
+        String folder = "objects/";
         this.filePath = Paths.get(folder, hash);
         // Files.createDirectories(directoryPathing);
         // File blob = new File(filePath, hash);

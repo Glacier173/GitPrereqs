@@ -27,7 +27,7 @@ public class CommitTest {
 
     @Test
     void testCreateTree() throws IOException {
-        tree tree = new tree();
+        Tree tree = new Tree();
         String sha = tree.getSha();
         String expectedSha = "da39a3ee5e6b4b0d3255bfef95601890afd80709";
 

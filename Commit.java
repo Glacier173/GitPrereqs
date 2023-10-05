@@ -51,7 +51,7 @@ public class Commit {
     }
 
     public String createTree() throws IOException {
-        tree tree = new tree();
+        Tree tree = new Tree();
         String sha = tree.getSha();
         return sha;
     }

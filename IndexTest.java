@@ -2,7 +2,10 @@
 import static org.junit.Assert.*;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.junit.jupiter.api.AfterAll;
@@ -11,25 +14,22 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class IndexTest {
-    @TempDir
-    static Path tempDir;
 
     @Test
     @DisplayName("Test if adding a blob works.")
     void testAdd() throws Exception {
-        File file = new File(tempDir.toFile(), "test.txt");
-        String fill = "testing";
-        Files.write(file.toPath(), fill.getBytes());
-
-        File object = new File("objects/" + Blob.encryptThisString(file.getAbsolutePath()));
-        assertTrue(object.exists());
+        File file = new File("test.txt");
+        //Blob b = new Blob(file);
+        String contentsOfFile = "testing";
+        Files.write(file.toPath(), contentsOfFile.getBytes());
+        Index ind = new Index();
+        //File object = new File("index");
+        ind.addBlob("test.txt");
+        String ret = ind.fileToString("index");
+        assertTrue(ret.contains(Blob.encryptThisString(contentsOfFile)));
         file.delete();
     }
 
-    @Test
-    void testFileToString() {
-
-    }
 
     @Test
     void testInit() throws Exception {
@@ -40,21 +40,33 @@ public class IndexTest {
 
     @Test
     void testRemoveBlob() throws Exception {
-        File file = new File(tempDir.toFile(), "test.txt");
-        String fill = "testing";
-        Files.write(file.toPath(), fill.getBytes());
-
-        File object = new File("objects/" + Blob.encryptThisString(file.getAbsolutePath()));
-        assertTrue(object.exists());
-        file.delete();
-        assertFalse(object.exists());
+        File file = new File("test.txt");
+        //Blob b = new Blob(file);
+        String contentsOfFile = "testing";
+        Files.write(file.toPath(), contentsOfFile.getBytes());
+        Index ind = new Index();
+        //File object = new File("index");
+        ind.addBlob("test.txt");
+        String ret = ind.fileToString("index");
+        assertTrue(ret.contains(Blob.encryptThisString(contentsOfFile)));
+        //file.delete();
+        ind.removeBlob("test.txt");
+        ret = ind.fileToString("index");
+        assertTrue(!ret.contains(Blob.encryptThisString(contentsOfFile)));
     }
 
     @Test
     void testWriter() throws Exception {
-        File file = new File(tempDir.toFile(), "test.txt");
-        String fill = "testing";
-        Index.writer(fill, file.getAbsolutePath());
-        assertTrue("File doesn't contain written string", file.toString().contains(fill));
+        Index ind = new Index();
+        File f = new File("test.txt");
+        f.createNewFile();
+        String contents = "testing";
+        FileWriter fw = new FileWriter(f);
+        fw.write(contents);
+        fw.close();
+        ind.addBlob("test.txt");
+        Index.writeInd();
+        String ret = ind.fileToString("index");
+        assertTrue(ret.contains(Blob.encryptThisString(contents)));
     }
 }

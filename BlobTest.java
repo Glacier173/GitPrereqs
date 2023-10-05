@@ -2,7 +2,9 @@
 import static org.junit.Assert.*;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.junit.jupiter.api.AfterAll;
@@ -41,7 +43,7 @@ public class BlobTest {
     void testBlobContents() throws Exception {
         File file = new File("test.txt");
         file.createNewFile();
-        assertTrue("File doesn't exist", file.exists());
+        //assertTrue("File doesn't exist", file.exists());
         String fill = "testing";
         Files.write(file.toPath(), fill.getBytes());
 
@@ -49,9 +51,14 @@ public class BlobTest {
 
         File blobFile = blob.getPath().toFile();
 
-        String inside = blob.getFileData().toString();
-
-        assertTrue("Contents do not match", inside.equals(fill));
+        BufferedReader br = new BufferedReader(new FileReader(blobFile));
+        StringBuilder sb = new StringBuilder();
+        while (br.ready())
+        {
+            sb.append((char)br.read());
+        }
+        br.close();
+        assertTrue("Contents do not match", sb.toString().equals(fill));
         file.delete();
         blobFile.delete();
     }

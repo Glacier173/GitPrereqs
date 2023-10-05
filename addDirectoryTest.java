@@ -34,7 +34,7 @@ public class addDirectoryTest {
         createFile("directoryTest/file1.txt", "abcdefg");
         createFile("directoryTest/file2.txt", "hijklmn");
         createFile("directoryTest/file3.txt", "opqrstu");
-        tree mainTree = new tree();
+        Tree mainTree = new Tree();
         String result = mainTree.addDirectory("directoryTest");
 
         //System.out.println("Tree contents: ");
@@ -70,7 +70,7 @@ public class addDirectoryTest {
         createFile("directoryTestFile/file2.txt", "hijklmn");
         createFile("directoryTestFile/file3.txt", "opqrstu");
         createSubDirectoryWithFiles(dir, "subDirectory");
-        tree mainTree = new tree();
+        Tree mainTree = new Tree();
         mainTree.addDirectory("directoryTestFile");
         String expected = "024d45c0b43e7b916223877ac2e411cbc3fb65d3";
         StringBuilder sb = new StringBuilder();

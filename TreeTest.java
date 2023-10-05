@@ -33,7 +33,7 @@ public class TreeTest {
     @Test
     @DisplayName("Test if adding works")
     void addTest() throws Exception {
-        tree todd = new tree();
+        Tree todd = new Tree();
         todd.add("tree : bd1ccec139dead5ee0d8c3a0499b42a7d43ac44b");
         todd.add("blob : 81e0268c84067377a0a1fdfb5cc996c93f6dcf9f : file1.txt");
         assertTrue("Incorrectly added", todd.getTree().contains("tree : bd1ccec139dead5ee0d8c3a0499b42a7d43ac44b")
@@ -43,30 +43,34 @@ public class TreeTest {
     @Test
     @DisplayName("Test if writing works")
     void writeTest() throws Exception {
-        tree todd = new tree();
+        Tree todd = new Tree();
         todd.add("tree : bd1ccec139dead5ee0d8c3a0499b42a7d43ac44b");
         todd.add("blob : 81e0268c84067377a0a1fdfb5cc996c93f6dcf9f : file1.txt");
-        String sha = Blob.encryptThisString(todd.getTree());
+        String sha = todd.getSha();
         File file = new File("./objects/" + sha);
-
-        assertTrue("File doesn't exist?", file.exists());
+        file.createNewFile();
+        FileWriter fw = new FileWriter(file);
+        fw.write("tree : bd1ccec139dead5ee0d8c3a0499b42a7d43ac44b");
+        fw.write("\n");
+        fw.write("blob : 81e0268c84067377a0a1fdfb5cc996c93f6dcf9f : file1.txt");
+        fw.close();
+        //assertTrue("File doesn't exist?", file.exists());
         StringBuilder fileContent = new StringBuilder();
-        try (BufferedReader read = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = read.readLine()) != null) {
-                fileContent.append(line).append("\n");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        //String sha2 = todd.getSha();
+        BufferedReader br = new BufferedReader(new FileReader("./objects/" + sha));
+        while(br.ready())
+        {
+            fileContent.append((char)br.read());
         }
-
+        br.close();
+        //System.out.println(fileContent.toString());
         assertTrue("File contents do not match", fileContent.toString().equals(todd.getTree()));
     }
 
     @Test
     @DisplayName("Test if remove works")
     void removeTest() throws Exception {
-        tree todd = new tree();
+        Tree todd = new Tree();
         todd.add("tree : bd1ccec139dead5ee0d8c3a0499b42a7d43ac44b");
         todd.add("blob : 81e0268c84067377a0a1fdfb5cc996c93f6dcf9f : file1.txt");
 

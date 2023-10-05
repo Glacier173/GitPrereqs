@@ -13,6 +13,7 @@ import java.util.Scanner;
 
 public class Index {
     private static HashMap<String, String> hMap = new HashMap<>();
+    private static HashMap<String, String> mapForDirs = new HashMap();
 
     public void init() throws IOException {
         hMap = new HashMap<>();
@@ -51,43 +52,51 @@ public class Index {
         return sb.toString();
     }
 
-    public void addBlob(String fileName) throws IOException {
-        if (!hMap.containsKey(fileName)) {
-            String hash = Blob.encryptThisString(fileName);
-            Path p = Paths.get(fileName);
-            String contents = Blob.reader(p);
-            writer(contents, "objects/" + hash);
-            if (hash != null) {
+    public void addBlob(String fileName) throws Exception {
+        File f = new File(fileName);
+        if(f.isFile())
+        {
+            if (!hMap.containsKey(fileName)) {
+                //Blob b = new Blob(f);
+                StringBuilder sb = new StringBuilder();
+                BufferedReader br = new BufferedReader(new FileReader(f));
+                while (br.ready())
+                {
+                    sb.append((char)br.read());
+                }
+                br.close();
+                String hash = Blob.encryptThisString(sb.toString());
                 hMap.put(fileName, hash);
+            } else {
+                System.out.println("File" + fileName + " already exists in the index");
             }
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter("index", true))) {
-                bw.write(fileName + " : " + hash);
-                bw.newLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            System.out.println("File" + fileName + " already exists in the index");
         }
+        if (f.isDirectory())
+        {
+            if (!mapForDirs.containsKey(fileName))
+            {
+                Tree mainTree = new Tree();
+                mapForDirs.put(fileName, mainTree.addDirectory(fileName));
+            }
+        }
+        writeInd();
     }
 
-    public static void writer(String str, String file) throws IOException {
-        PrintWriter pw = new PrintWriter(file);
-        pw.print(str);
-        pw.close();
+    public static void writeInd() throws IOException {
+        FileWriter fw = new FileWriter("./index");
+        for (String file : hMap.keySet())
+        {
+            fw.write("Blob : " + hMap.get(file) + " : " + file + "\n");
+        }
+        for (String dir : mapForDirs.keySet())
+        {
+            fw.write("Tree : " + mapForDirs.get(dir) + " : " + dir + "\n");
+        }
+        fw.close();
     }
 
-    public static void removeBlob(String fileName) throws IOException {
-        if (hMap.containsKey(fileName)) {
-            hMap.remove(fileName);
-        }
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("index"))) {
-            for (Map.Entry<String, String> keys : hMap.entrySet()) {
-                bw.write(keys.getKey() + " : " + keys.getValue());
-                bw.newLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void removeBlob(String fileName) throws IOException {
+        hMap.remove(fileName);
+        writeInd();
     }
 }
