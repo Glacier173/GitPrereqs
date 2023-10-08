@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -8,12 +9,22 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Formatter;
 
 public class Commit {
     private File commit;
+    private String prevSha = "";
+    private String nextSha = "";
+    private String author;
+    private String date;
+    private String summary;
+    private Tree mainTree;
+    private String contentsOfFile;
+    private String sha ="";
+
     
     public Commit(String prevCommitSha, String author, String summary) throws IOException {
         File objects = new File("./objects");
@@ -48,6 +59,66 @@ public class Commit {
         rename(commit);
     }
 
+    public Commit(String author, String summary) throws IOException
+    {
+        Index ind = new Index();
+        ind.init();
+        File f = new File("first");
+        if (f.exists())
+        {
+            String str = ind.fileToString("first");
+            prevSha = Blob.encryptThisString(str);
+        }
+        this.mainTree = new Tree(getLineOne());
+        this.author = author;
+        this.summary = summary;
+        date = getDate();
+        contentsOfFile = mainTree.getSha() + "\n" + prevSha + "\n" + nextSha + "\n" + author + "\n" + date + "\n" + summary;
+        sha = encryptPassword(contentsOfFile);
+        File commitFile = new File("./objects/" + sha);
+        if (!commitFile.exists())
+        {
+            commitFile.createNewFile();
+        }
+        PrintWriter writer = new PrintWriter(new FileWriter(commitFile));
+        writer.print(contentsOfFile);
+        writer.close();
+        linkToNextCom();
+        FileWriter fw = new FileWriter("first");
+        fw.write(sha);
+        fw.close();
+        new FileWriter("./index", false).close();
+    }
+
+    public void linkToNextCom() throws IOException {
+        File f = new File("first");
+        if(!f.exists())
+        {
+            return;
+        }
+        File file = new File("./objects/" + prevSha);
+        File holder = new File("./objects/holder");
+        try (BufferedReader br = new BufferedReader(new FileReader(file));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(holder))){
+        String line = "";
+            for (int i = 0; i < 2; i++) {
+                line = br.readLine();
+                bw.write(line + "\n");
+            }
+            bw.write(sha + "\n");
+            for (int i = 0; i < 2; i++) {
+                line = br.readLine();
+            }
+            while ((line = br.readLine()) != null) {
+                bw.write(line + "\n");
+            }
+        } catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+        boolean renameDone = holder.renameTo(file);
+    }
+
     public String createTree() throws IOException {
         Tree tree = new Tree();
         String sha = tree.getSha();
@@ -59,9 +130,9 @@ public class Commit {
         return timeStamp;
     }
 
-    public String getLineOne(Commit com) throws IOException
+    public String getLineOne() throws IOException
     {
-        String path = "./objects/" + com.getSha();
+        String path = "./objects/" + getSha();
         File file = new File (path);
         BufferedReader br = new BufferedReader(new FileReader(file));
         String ret = br.readLine();

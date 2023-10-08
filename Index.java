@@ -76,8 +76,8 @@ public class Index {
 
     public static void writeInd() throws IOException {
         FileWriter fw = new FileWriter("./index");
-        Index ind = new Index();
-        Commit com = new Commit();
+        //Index ind = new Index();
+        //Commit com = new Commit();
         for (String file : hMap.keySet())
         {
             fw.write("blob : " + hMap.get(file) + " : " + file + "\n");
@@ -87,9 +87,15 @@ public class Index {
             fw.write("tree : " + mapForDirs.get(dir) + " : " + dir + "\n");
         }
         fw.close();
+    }
+    public static void writeToTree(Commit com) throws IOException
+    {
         Tree tree = new Tree();
-        FileWriter fw2 = new FileWriter(tree.getSha());
-        fw2.write(ind.fileToString("./index"));
+        Index ind = new Index();
+        FileWriter fw = new FileWriter(tree.getSha());
+        fw.write(ind.fileToString("./index"));
+        String commitPrevTreeSha = com.getLineOne(com);
+        fw.write("tree : " + commitPrevTreeSha);
     }
 
     public void removeBlob(String fileName) throws IOException {
