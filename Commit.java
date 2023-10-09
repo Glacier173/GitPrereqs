@@ -92,16 +92,16 @@ public class Commit {
     }
 
     public void linkToNextCom() throws IOException {
-        File f = new File("first");
-        if(!f.exists())
+        File firstFile = new File("first");
+        if (!firstFile.exists())
         {
             return;
         }
-        File file = new File("./objects/" + prevSha);
-        File holder = new File("./objects/holder");
-        try (BufferedReader br = new BufferedReader(new FileReader(file));
-        BufferedWriter bw = new BufferedWriter(new FileWriter(holder))){
-        String line = "";
+        File currentFile = new File("./objects/" + prevSha);
+        File holderFile = new File("./objects/holder");
+        try (BufferedReader br = new BufferedReader(new FileReader(currentFile));
+             BufferedWriter bw = new BufferedWriter(new FileWriter(holderFile))) {
+            String line = "";
             for (int i = 0; i < 2; i++)
             {
                 line = br.readLine();
@@ -116,12 +116,12 @@ public class Commit {
             {
                 bw.write(line + "\n");
             }
-        } catch(IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        holder.renameTo(file);
+        holderFile.renameTo(currentFile);
     }
+    
 
     public String createTree() throws IOException {
         Tree tree = new Tree();
