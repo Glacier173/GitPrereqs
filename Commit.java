@@ -24,6 +24,7 @@ public class Commit {
     private Tree mainTree;
     private String contentsOfFile;
     private String sha ="";
+    private Date date1;
 
     
     public Commit(String prevCommitSha, String author, String summary) throws IOException {
@@ -72,8 +73,8 @@ public class Commit {
         this.mainTree = new Tree(getLineOne());
         this.author = author;
         this.summary = summary;
-        date = getDate();
-        contentsOfFile = mainTree.getSha() + "\n" + prevSha + "\n" + nextSha + "\n" + author + "\n" + date + "\n" + summary;
+        this.date1 = new Date(java.lang.System.currentTimeMillis());
+        contentsOfFile = mainTree.getSha() + "\n" + prevSha + "\n" + nextSha + "\n" + author + "\n" + date1 + "\n" + summary;
         sha = encryptPassword(contentsOfFile);
         File commitFile = new File("./objects/" + sha);
         if (!commitFile.exists())
@@ -101,22 +102,25 @@ public class Commit {
         try (BufferedReader br = new BufferedReader(new FileReader(file));
         BufferedWriter bw = new BufferedWriter(new FileWriter(holder))){
         String line = "";
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < 2; i++)
+            {
                 line = br.readLine();
                 bw.write(line + "\n");
             }
             bw.write(sha + "\n");
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < 2; i++)
+            {
                 line = br.readLine();
             }
-            while ((line = br.readLine()) != null) {
+            while ((line = br.readLine()) != null)
+            {
                 bw.write(line + "\n");
             }
         } catch(IOException e)
         {
             e.printStackTrace();
         }
-        boolean renameDone = holder.renameTo(file);
+        holder.renameTo(file);
     }
 
     public String createTree() throws IOException {
