@@ -59,16 +59,16 @@ public class Commit {
         pw.print(summary);
 
         pw.close();
-
+        //shaOfThisCommit = encryptPassword(getContents(commit));
         rename(commit);
-        updateChildShaOfParent();
-
+        updateChildShaOfParent(shaOfThisCommit);
     }
 
     //public void setFirstToNext
     
-    public void updateChildShaOfParent() throws IOException
+    public void updateChildShaOfParent(String newestShaToAddToParent) throws IOException
     {
+        String tempprevsha = prevSha;
         if (prevSha == "")
         {
             return;
@@ -76,19 +76,67 @@ public class Commit {
         File f = new File("./objects/" + prevSha);
         if (f.exists())
         {
+
+            Index ind = new Index();
+            String parentCommitContents = ind.fileToString("./objects/" + prevSha);
+            System.out.println(parentCommitContents);
+            int secondNewLine = Commit.ordinalIndexOf(parentCommitContents, "\n", 2);
+            int thirdNewLine = Commit.ordinalIndexOf(parentCommitContents, "\n", 3);
+            //String toWrite = Commit.insertString("", prevSha, secondNewLine);
+            //System.out.println(toWrite);
+            String parentCommitContentsFirstTwoLines = parentCommitContents.substring(0,secondNewLine+1);
+            String parentCommitContentsLastThreeLines = parentCommitContents.substring(thirdNewLine, parentCommitContents.length());
+            parentCommitContents = parentCommitContentsFirstTwoLines + newestShaToAddToParent + parentCommitContentsLastThreeLines;
+            PrintWriter pw = new PrintWriter("./objects/" + prevSha);
+            pw.write(parentCommitContents);
+            pw.close();
+            /*
             BufferedReader br = new BufferedReader(new FileReader(f));
             StringBuilder sb = new StringBuilder();
             PrintWriter writer = new PrintWriter(f);
             sb.append(br.readLine() + "\n");
             sb.append(br.readLine() + "\n");
-            sb.append(prevSha);
+            sb.append(toWrite +"\n");
             sb.append(br.readLine() + "\n");
             sb.append(br.readLine() + "\n");
             sb.append(br.readLine() + "\n");
-            writer.write(sb.toString());
+            String temp = sb.toString();
+            writer.write(temp);
             br.close();
-            writer.close();
+            */
+            //writer.close();
         }
+    }
+
+    public static String insertString( String originalString, String stringToBeInserted, int index) 
+    { 
+  
+        // Create a new string 
+        String newString = new String(); 
+  
+        for (int i = 0; i < originalString.length(); i++) { 
+  
+            // Insert the original string character 
+            // into the new string 
+            newString += originalString.charAt(i); 
+  
+            if (i == index) { 
+  
+                // Insert the string to be inserted 
+                // into the new string 
+                newString += stringToBeInserted; 
+            } 
+        } 
+  
+        // return the modified String 
+        return newString; 
+    } 
+
+    public static int ordinalIndexOf(String str, String substr, int n) {
+        int pos = str.indexOf(substr);
+        while (--n > 0 && pos != -1)
+            pos = str.indexOf(substr, pos + 1);
+        return pos;
     }
 
     public Commit(String author, String summary) throws IOException

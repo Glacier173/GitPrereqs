@@ -28,17 +28,30 @@ public class CommitTest {
 
     @Test
     void testConstructor2() throws IOException {
-        Commit testCom = new Commit("Bob", "this is a test");
-        String sha = testCom.getSha();
-        System.out.println(sha);
+        Index ind = new Index();
+        Commit parentCom = new Commit("Bob", "this is a test");
+        String shaOfParent = parentCom.getSha();
+        String parentCommitContents = ind.fileToString("./objects/" + shaOfParent);
+        int i = parentCommitContents.lastIndexOf("\n");
+        int j = Commit.ordinalIndexOf(parentCommitContents, "\n", 4);
+        Commit commitWithPrevCommit = new Commit(shaOfParent, "Wyatt", "this is not a test");
+
+        // Testing if the childSha is updated for the Parent
+        // Read thu parent commit
+        // Get third line
+        // Verify theres actually a SHA there
+        parentCommitContents = ind.fileToString("./objects/" + shaOfParent);
+
+        
+        //System.out.println(sha);
         String dirName = "./objects/";
         File dir = new File (dirName);
-        File check = new File(dir,sha);
+        File check = new File(dir,shaOfParent);
 
         //how do i check if time keeps changing?
-        File f = new File(testCom.getSha());
-        //assertTrue(check.exists());
-        assertTrue("d5af8be8c2a1c1163e51f44e8631247217b0e4ca".equals(testCom.encryptPassword(testCom.getContents((f)))));
+        //File f = new File(testCom.getSha());
+        assertTrue(check.exists());
+        //assertTrue("d5af8be8c2a1c1163e51f44e8631247217b0e4ca".equals(parentCom.encryptPassword(parentCom.getContents((f)))));
     }
 
     @Test
