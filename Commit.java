@@ -108,19 +108,20 @@ public class Commit {
     public Commit(String author, String summary) throws IOException
     {
         this("", author, summary);
-        File f = new File("./objects/" + currSha);
+        /*File f = new File("./objects/" + currSha);
         BufferedReader br = new BufferedReader(new FileReader(f));
             StringBuilder sb = new StringBuilder();
             PrintWriter writer = new PrintWriter(f);
             sb.append(br.readLine() + "\n");
             sb.append(br.readLine() + "\n");
-            sb.append(nextSha);
+            sb.append(prevSha);
             sb.append(br.readLine() + "\n");
             sb.append(br.readLine() + "\n");
             sb.append(br.readLine() + "\n");
             writer.write(sb.toString());
             br.close();
             writer.close();
+            */
         /*sha1 = createTree();
         Index ind = new Index();
         ind.init();
