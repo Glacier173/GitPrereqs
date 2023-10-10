@@ -34,7 +34,7 @@ public class tester {
         pw.println("hi");
         pw.close();*/
 
-        Commit testCom = new Commit("732d12f7e4f2e629e2954acbb720c32c0be985d1", null, "Bob", "this is a test");
+        //Commit testCom = new Commit("732d12f7e4f2e629e2954acbb720c32c0be985d1", null, "Bob", "this is a test");
 
         String dirName = "./objects/";
         File dir = new File (dirName);

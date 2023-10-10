@@ -16,7 +16,7 @@ public class Tree {
 
     public Tree() {
         sb = new StringBuilder();
-    }
+    } 
 
     public void writeToFile() throws Exception {
         /*String file = Blob.encryptThisString(sb.toString());

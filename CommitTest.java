@@ -14,7 +14,20 @@ public class CommitTest {
 
     @Test
     void testConstructor() throws IOException {
-        Commit testCom = new Commit("732d12f7e4f2e629e2954acbb720c32c0be985d1", "Bob", "this is a test");
+        Commit testCom = new Commit("33ef4e47350c03cb7ded3413817ca9b9ed438e7", "Bob", "this is a test");
+        String sha = testCom.getSha();
+
+        String dirName = "./objects/";
+        File dir = new File (dirName);
+        File check = new File(dir,sha);
+
+        //how do i check if time keeps changing?
+        assertTrue(check.exists());
+    }
+
+    @Test
+    void testConstructor2() throws IOException {
+        Commit testCom = new Commit( "Bob", "this is a test");
         String sha = testCom.getSha();
 
         String dirName = "./objects/";

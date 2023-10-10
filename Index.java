@@ -94,7 +94,7 @@ public class Index {
         Index ind = new Index();
         FileWriter fw = new FileWriter(tree.getSha());
         fw.write(ind.fileToString("./index"));
-        String commitPrevTreeSha = com.getLineOne(com);
+        String commitPrevTreeSha = com.getLineOne();
         fw.write("tree : " + commitPrevTreeSha);
     }
 
