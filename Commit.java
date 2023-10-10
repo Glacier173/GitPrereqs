@@ -19,7 +19,7 @@ public class Commit {
     private String prevSha = "";
     private String nextSha = "";
     private String author;
-    private String currSha;
+    private String shaOfThisCommit;
     private String date;
     private String summary;
     private Tree mainTree;
@@ -37,29 +37,7 @@ public class Commit {
         String sha = createTree();
         date1 = new Date(java.lang.System.currentTimeMillis());
         commit = new File("commit");
-        /*
-        StringBuilder sb = new StringBuilder();
-        sb.append(sha);
-        sb.append("\n" + prevCommitSha);
-        sb.append("\n" + author);
-        sb.append("\n");
-        sb.append("\n" + date1);
-        sb.append("\n" + summary);
-        currSha = encryptPassword(sb.toString());
-        nextSha = currSha;
-        File com = new File("./objects/" + currSha);
-        PrintWriter writer = new PrintWriter(com);
-        writer.println(sha);
-        writer.println(prevCommitSha);
-        writer.println("");
-        writer.println(author);
-        writer.println(date1);
-        writer.print(summary);
 
-        writer.close();
-        */
-        //print sha
-        //File f = new File("commit");
         
         PrintWriter pw = new PrintWriter(new FileWriter("commit"));
         pw.println(sha);
@@ -84,23 +62,7 @@ public class Commit {
 
         rename(commit);
         updateChildShaOfParent();
-        if (prevCommitSha != "")
-        {
-            File f = new File("./objects/" + prevCommitSha);
-        //BufferedReader br = new BufferedReader(new FileReader(commit));
-        BufferedReader br2 = new BufferedReader(new FileReader(commit));
-        StringBuilder sb = new StringBuilder();
-        PrintWriter writer = new PrintWriter(encryptPassword(getContents(f)));
-        sb.append(br2.readLine() + "\n");
-        sb.append(br2.readLine() + "\n");
-        sb.append(encryptPassword(getContents(commit)));
-        sb.append(br2.readLine() + "\n");
-        sb.append(br2.readLine() + "\n");
-        sb.append(br2.readLine() + "\n");
-        br2.close();
-        writer.write(sb.toString());
-        writer.close();
-        }
+
     }
 
     //public void setFirstToNext
@@ -278,9 +240,8 @@ public class Commit {
         return sha1;
     }
     */
-    public String getSha() throws IOException {
-        String str = getContents(commit);
-        return encryptPassword(str);
+    public String getSha() {
+        return shaOfThisCommit;
     }
     private void rename(File fileName) throws IOException {
         /*BufferedReader br = new BufferedReader(new FileReader(fileName));
@@ -304,14 +265,13 @@ public class Commit {
         str = str.stripTrailing();
 
         //converting to sha1
-
-        String sha1 = encryptPassword(str);
+        // TODO - INCLUDES 3rd LINE IN THE COMMIT
+        shaOfThisCommit = encryptPassword(str);
 
         //printing to objects folder
         String dirName = "./objects/";
         File dir = new File (dirName);
-        //File f = new File("./objects/" + sha1);
-        File newFile = new File (dir, sha1);
+        File newFile = new File (dir, shaOfThisCommit);
 
         PrintWriter pw = new PrintWriter(newFile);
         /*StringBuilder sb = new StringBuilder();
@@ -329,6 +289,10 @@ public class Commit {
         //str = str.stripTrailing();
         pw.write(str);
         pw.close();
+
+        File tempCommitFile = new File("commit");
+        tempCommitFile.delete();
+        tempCommitFile.createNewFile();
     }
 
     String encryptPassword(String password)
