@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -14,7 +15,7 @@ public class CommitTest {
 
     @Test
     void testConstructor() throws IOException {
-        Commit testCom = new Commit("33ef4e47350c03cb7ded3413817ca9b9ed438e7", "Bob", "this is a test");
+        Commit testCom = new Commit("d5af8be8c2a1c1163e51f44e8631247217b0e4ca", "Bob", "this is a test");
         String sha = testCom.getSha();
 
         String dirName = "./objects/";
@@ -27,15 +28,17 @@ public class CommitTest {
 
     @Test
     void testConstructor2() throws IOException {
-        Commit testCom = new Commit( "Bob", "this is a test");
+        Commit testCom = new Commit("Bob", "this is a test");
         String sha = testCom.getSha();
-
+        System.out.println(sha);
         String dirName = "./objects/";
         File dir = new File (dirName);
         File check = new File(dir,sha);
 
         //how do i check if time keeps changing?
-        assertTrue(check.exists());
+        File f = new File(testCom.getSha());
+        //assertTrue(check.exists());
+        assertTrue("d5af8be8c2a1c1163e51f44e8631247217b0e4ca".equals(testCom.encryptPassword(testCom.getContents((f)))));
     }
 
     @Test

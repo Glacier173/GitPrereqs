@@ -37,6 +37,7 @@ public class Commit {
         String sha = createTree();
         date1 = new Date(java.lang.System.currentTimeMillis());
         commit = new File("commit");
+        /*
         StringBuilder sb = new StringBuilder();
         sb.append(sha);
         sb.append("\n" + prevCommitSha);
@@ -56,6 +57,7 @@ public class Commit {
         writer.print(summary);
 
         writer.close();
+        */
         //print sha
         PrintWriter pw = new PrintWriter(new FileWriter("commit"));
         pw.println(sha);
@@ -77,17 +79,17 @@ public class Commit {
 
         pw.close();
 
-        //rename(commit);
-        updateChildShaOfParent(prevCommitSha);
+        rename(commit);
+        updateChildShaOfParent();
     }
     
-    public void updateChildShaOfParent(String prevCommitSha) throws IOException
+    public void updateChildShaOfParent() throws IOException
     {
-        if (prevCommitSha == "")
+        if (prevSha == "")
         {
             return;
         }
-        File f = new File("./objects/" + prevCommitSha);
+        File f = new File("./objects/" + prevSha);
         if (f.exists())
         {
             BufferedReader br = new BufferedReader(new FileReader(f));
@@ -153,7 +155,7 @@ public class Commit {
         */
     }
 
-    public void linkToNextCom() throws IOException {
+    /*public void linkToNextCom() throws IOException {
         File firstFile = new File("first");
         if (!firstFile.exists())
         {
@@ -181,6 +183,7 @@ public class Commit {
         }
         fileToReset.renameTo(file);
     }
+    */
     
 
     public String createTree() throws IOException {
@@ -208,7 +211,7 @@ public class Commit {
         return ret;
     }
 
-    private String getContents(File fileName) throws IOException {
+    String getContents(File fileName) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(fileName));
         StringBuilder sb = new StringBuilder();
         while (br.ready())
@@ -236,12 +239,25 @@ public class Commit {
         return str;
         */
     }
-
+    /*public static String getSHA(String contents) {
+        String sha1 = "";
+        try {
+            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+            crypt.reset();
+            crypt.update(contents.getBytes("UTF-8"));
+            sha1 = byteToHex(crypt.digest());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return sha1;
+    }
+    */
     public String getSha() throws IOException {
         String str = getContents(commit);
         return encryptPassword(str);
     }
-    /*
     private void rename(File fileName) throws IOException {
         /*BufferedReader br = new BufferedReader(new FileReader(fileName));
         String str = "";
@@ -258,9 +274,10 @@ public class Commit {
 
         str = str.trim();//get rid of extra line
 
-        br.close();*/
-        /*
+        br.close();
+        */
         String str = getContents(fileName);
+        str = str.stripTrailing();
 
         //converting to sha1
 
@@ -269,17 +286,28 @@ public class Commit {
         //printing to objects folder
         String dirName = "./objects/";
         File dir = new File (dirName);
+        //File f = new File("./objects/" + sha1);
         File newFile = new File (dir, sha1);
 
         PrintWriter pw = new PrintWriter(newFile);
-
-        pw.print(str);
-
+        /*StringBuilder sb = new StringBuilder();
+        BufferedReader br = new BufferedReader(new FileReader(fileName));
+        sb.append(br.readLine() + "\n");
+        sb.append(br.readLine() + "\n");
+        sb.append("\n");
+        sb.append(br.readLine() + "\n");
+        sb.append(br.readLine() + "\n");
+        sb.append(br.readLine());
+        br.close();
+        pw.print(sb.toString());
+        pw.close();
+        */
+        //str = str.stripTrailing();
+        pw.write(str);
         pw.close();
     }
-    */
 
-    private String encryptPassword(String password)
+    String encryptPassword(String password)
     {
         String sha1 = "";
         try
@@ -300,7 +328,7 @@ public class Commit {
         return sha1;
     }
 
-    private String byteToHex(final byte[] hash)
+    private static String byteToHex(final byte[] hash)
     {
         Formatter formatter = new Formatter();
         for (byte b : hash)
