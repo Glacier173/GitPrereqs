@@ -59,6 +59,8 @@ public class Commit {
         writer.close();
         */
         //print sha
+        //File f = new File("commit");
+        
         PrintWriter pw = new PrintWriter(new FileWriter("commit"));
         pw.println(sha);
 
@@ -68,11 +70,12 @@ public class Commit {
         //print empty line
         pw.println();
 
+        //print name
+        pw.println(author);
+
         //print date
         pw.println(date1);
 
-        //print name
-        pw.println(author);
 
         //print summary
         pw.print(summary);
@@ -81,7 +84,26 @@ public class Commit {
 
         rename(commit);
         updateChildShaOfParent();
+        if (prevCommitSha != "")
+        {
+            File f = new File("./objects/" + prevCommitSha);
+        //BufferedReader br = new BufferedReader(new FileReader(commit));
+        BufferedReader br2 = new BufferedReader(new FileReader(commit));
+        StringBuilder sb = new StringBuilder();
+        PrintWriter writer = new PrintWriter(encryptPassword(getContents(f)));
+        sb.append(br2.readLine() + "\n");
+        sb.append(br2.readLine() + "\n");
+        sb.append(encryptPassword(getContents(commit)));
+        sb.append(br2.readLine() + "\n");
+        sb.append(br2.readLine() + "\n");
+        sb.append(br2.readLine() + "\n");
+        br2.close();
+        writer.write(sb.toString());
+        writer.close();
+        }
     }
+
+    //public void setFirstToNext
     
     public void updateChildShaOfParent() throws IOException
     {
@@ -124,7 +146,7 @@ public class Commit {
             br.close();
             writer.close();
             */
-        /*sha1 = createTree();
+        //sha1 = createTree();
         Index ind = new Index();
         ind.init();
         File f = new File("first");
@@ -147,12 +169,12 @@ public class Commit {
         PrintWriter writer = new PrintWriter(new FileWriter(commitFile));
         writer.print(contentsOfFile);
         writer.close();
-        linkToNextCom();
+        //linkToNextCom();
         FileWriter fw = new FileWriter("first");
         fw.write(sha1);
         fw.close();
         new FileWriter("./index", false).close();
-        */
+        
     }
 
     /*public void linkToNextCom() throws IOException {
