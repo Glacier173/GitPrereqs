@@ -147,6 +147,7 @@ public class Commit {
             writer.close();
             */
         //sha1 = createTree();
+        /*
         Index ind = new Index();
         ind.init();
         File f = new File("first");
@@ -174,6 +175,7 @@ public class Commit {
         fw.write(sha1);
         fw.close();
         new FileWriter("./index", false).close();
+        */
         
     }
 

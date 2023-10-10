@@ -15,7 +15,7 @@ public class CommitTest {
 
     @Test
     void testConstructor() throws IOException {
-        Commit testCom = new Commit("d5af8be8c2a1c1163e51f44e8631247217b0e4ca", "Bob", "this is a test");
+        Commit testCom = new Commit("", "Bob", "this is a test");
         String sha = testCom.getSha();
 
         String dirName = "./objects/";
