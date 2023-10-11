@@ -65,6 +65,7 @@ public class IndexTest {
         //file.delete();
         ind.removeBlob("test.txt");
         ret = ind.fileToString("index");
+        System.out.println(ret);
         assertTrue(!ret.contains(Blob.encryptThisString(contentsOfFile)));
     }
 

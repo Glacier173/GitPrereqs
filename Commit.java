@@ -257,10 +257,11 @@ public class Commit {
             throw new Exception("file doesn't exist");
         }
         BufferedReader br = new BufferedReader(new FileReader(indexFile));
-        String line;
+        String read;
         while (br.ready()) {
-            line = br.readLine();
-            tree.add(line);
+            read = br.readLine();
+            if (read.contains("*deleted*"))
+            tree.add(read);
         }
         br.close();
         tree.writeToFile();

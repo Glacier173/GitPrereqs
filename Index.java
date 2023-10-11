@@ -110,6 +110,7 @@ public class Index {
     */
 
     public void removeBlob(String fileName) throws IOException {
+        arr.add(fileName);
         hMap.remove(fileName);
         writeInd();
     }

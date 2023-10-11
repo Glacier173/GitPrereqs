@@ -63,7 +63,7 @@ public class Tree {
         ArrayList<String> arr = new ArrayList<String>();
         Boolean isHere = false;
         StringBuilder sb = new StringBuilder();
-        File file = new File(shaOfTree);
+        File file = new File("./objects/" + shaOfTree);
         String morePrevShaTree = "";
         BufferedReader br = new BufferedReader(new FileReader(file));
         while(br.ready())
@@ -96,6 +96,55 @@ public class Tree {
         if (isHere == false){
             deleteFile(morePrevShaTree, deleteLine);
         }
+        add(sb.toString());
+    }
+
+    public void editExisting(String shaOfTree, String line) throws Exception
+    {
+        File edited = new File(line);
+        String shaOfFile = "";
+        ArrayList<String> arr = new ArrayList<String>();
+        String morePrevTreeSha ="";
+        boolean isHere = false;
+        StringBuilder sb = new StringBuilder();
+        shaOfFile = Blob.encryptThisString(line);
+        File treeFile = new File("./objects/" + shaOfTree);
+        BufferedReader br = new BufferedReader(new FileReader(treeFile));
+        while (br.ready())
+        {
+            String read = br.readLine();
+            if(read.contains("tree : "))
+            {
+                morePrevTreeSha = read.substring(7,47);//copy paste from the delete method b/c sha are still 40 chars and tree : is 7
+            }
+            else{
+                if (read.contains(line))
+                {
+                    isHere = true;
+                }
+                else{
+                    sb.append(read + "\n");
+                }
+            }
+        }
+        br.close();
+
+        if (isHere == true)
+        {
+            if (morePrevTreeSha != "")
+            {
+                sb.append("tree : " + morePrevTreeSha);//we can do this b/c we know that this tree sha is not null
+            }
+        }
+        for (int i = 0; i < arr.size(); i++)
+        {
+            add(arr.get(i));
+        }
+        if(isHere == false)
+        {
+            editExisting(morePrevTreeSha, line);
+        }
+        add(sb.toString());
     }
 
     public void remove(String string) throws Exception
