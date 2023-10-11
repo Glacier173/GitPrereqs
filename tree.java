@@ -35,7 +35,9 @@ public class Tree {
         return Blob.encryptThisString(sb.toString());
     }
 
-    public void add(String string) {
+    public void add(String string) throws Exception
+    {
+        //Tree tree = new Tree();
         String inside = sb.toString();
         if (inside.contains(string)) {
             return;
@@ -45,10 +47,13 @@ public class Tree {
             sb.append("\n");
             sb.append(string);
         }
+        //tree.writeToFile();
     }
 
-    public void remove(String string) {
+    public void remove(String string) throws Exception
+    {
         String inside = sb.toString();
+        //Tree tree = new Tree();
         if (!inside.contains(string)) {
             return;
         }
@@ -63,7 +68,7 @@ public class Tree {
 
         scan.close();
         sb = sbtwo;
-
+        //tree.writeToFile();
     }
 
     public String getTree() {

@@ -88,7 +88,7 @@ public class Index {
         }
         fw.close();
     }
-    public static void writeToTree(Commit com) throws IOException
+    /*public static void writeToTree(Commit com) throws IOException
     {
         Tree tree = new Tree();
         Index ind = new Index();
@@ -97,6 +97,7 @@ public class Index {
         String commitPrevTreeSha = com.getLineOne();
         fw.write("tree : " + commitPrevTreeSha);
     }
+    */
 
     public void removeBlob(String fileName) throws IOException {
         hMap.remove(fileName);
