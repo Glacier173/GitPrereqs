@@ -87,6 +87,10 @@ public class Index {
             fw.write("tree : " + mapForDirs.get(dir) + " : " + dir + "\n");
         }
         fw.close();
+        for(String dir : mapForDirs.keySet())
+        {
+            mapForDirs.remove(dir);
+        }
     }
     /*public static void writeToTree(Commit com) throws IOException
     {

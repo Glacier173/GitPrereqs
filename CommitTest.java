@@ -158,9 +158,6 @@ public class CommitTest {
                 ind.addBlob("file1");
                 ind.addBlob("file2");
                 Commit firstCommit = new Commit("Wyatt", "first commit");
-                File f =  new File("index");
-                f.delete();
-                f.createNewFile();
 
                 File file3 = new File("file3");
                 createFile("file3", "fileContents3");
@@ -177,10 +174,13 @@ public class CommitTest {
                 File f1 =  new File("index");
                 f1.delete();
                 f1.createNewFile();
+                ind.removeBlob("dir");
+                System.out.println(ind.fileToString("index"));
                 File file5 = new File("file5");
                 createFile("file5", "fileContents5");
                 File file6 = new File("file6");
                 createFile("file6", "fileContents6");
+                new FileWriter("./index", false).close();
                 Index ind3 = new Index();
                 ind3.init();
                 ind3.addBlob("file5");
@@ -259,7 +259,7 @@ public class CommitTest {
                 assertEquals(ind.fileToString("./objects/" + shaOfFirstCommit), contentsOfFirstCommitAfterSecondCommit);
                 assertEquals(ind.fileToString("./objects/" + shaOfTreeForSecondCommit), contentsOfTreeForSecondCommit);
                 assertEquals(ind.fileToString("./objects/" + shaOfSecondCommit), contentsOfSecondCommitAfterThirdCommit);
-                assertEquals((ind.fileToString("./objects/" + shaOfTreeForThirdCommit)).substring(0,ordinalIndexOf(contentsOfTreeForThirdCommit, "\n", 3)), contentsOfTreeForThirdCommit);
+                assertEquals((ind.fileToString("./objects/" + shaOfTreeForThirdCommit)), contentsOfTreeForThirdCommit);
                 assertEquals(ind.fileToString("./objects/" + shaOfThirdCommit), contentsOfThirdCommitAfterFourthCommit);
                 assertEquals(ind.fileToString("./objects/" + shaOfTreeForFourthCommit), contentsOfTreeForFourthCommit);
                 assertEquals(ind.fileToString("./objects/" + shaOfFourthCommit), contentsOfFourthCommit);
