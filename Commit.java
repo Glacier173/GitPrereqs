@@ -260,7 +260,7 @@ public class Commit {
         String read;
         while (br.ready()) {
             read = br.readLine();
-            if (read.contains("*deleted*"))
+            //if (read.contains("*deleted*"))
             tree.add(read);
         }
         br.close();
