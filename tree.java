@@ -10,6 +10,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 public class Tree {
     private StringBuilder sb;
     private String holdTreeForAddDirectory;
@@ -48,6 +53,44 @@ public class Tree {
             sb.append(string);
         }
         //tree.writeToFile();
+    }
+
+    public void deleteFile(String prevShaTree, String line) throws Exception
+    {
+        line = line.substring(9,line.length());
+        ArrayList<String> arr = new ArrayList<String>();
+        File prevTreeSha = new File (prevShaTree);
+        Boolean isHere = false;
+        String morePrevShaTree = "";
+        BufferedReader br = new BufferedReader(new FileReader(prevTreeSha));
+        while(br.ready())
+        {
+            String read = br.readLine();
+            if (read.contains("tree : "))
+            {
+                morePrevShaTree = read.substring(7,47);//"tree : " is 7 characters and a sha is 40 (hence 7+40 = 47)
+            }
+            if(read.contains(line))
+            {
+                isHere = true;
+            }
+            else
+            {
+                arr.add(read);
+            }
+        }
+        br.close();
+        for(int i = 0; i < arr.size(); i++)
+        {
+            add(arr.get(i));
+        }
+        if (isHere == true && morePrevShaTree != "")
+        {
+            add("tree : " + morePrevShaTree + "\n");
+        }
+        if (isHere == false){
+            deleteFile(morePrevShaTree, line);
+        }
     }
 
     public void remove(String string) throws Exception

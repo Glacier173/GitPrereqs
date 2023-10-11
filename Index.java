@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -14,6 +15,7 @@ import java.util.Scanner;
 public class Index {
     private static HashMap<String, String> hMap = new HashMap<>();
     private static HashMap<String, String> mapForDirs = new HashMap<>();
+    private static ArrayList<String> arr = new ArrayList<>();
 
     public void init() throws IOException {
         hMap = new HashMap<>();
@@ -85,6 +87,10 @@ public class Index {
         for (String dir : mapForDirs.keySet())
         {
             fw.write("tree : " + mapForDirs.get(dir) + " : " + dir + "\n");
+        }
+        for (String str : arr)
+        {
+            fw.write("*deleted* " + str + "\n");
         }
         fw.close();
         for(String dir : mapForDirs.keySet())

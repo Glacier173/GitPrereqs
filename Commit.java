@@ -28,6 +28,7 @@ public class Commit {
     private String contentsOfFile;
     private String sha1 ="";
     private Date date1;
+    private String shaOfPrevTree;
 
     
     public Commit(String prevCommitSha, String author, String summary) throws Exception {
@@ -68,6 +69,12 @@ public class Commit {
         //shaOfThisCommit = encryptPassword(getContents(commit));
         rename(commit);
         updateChildShaOfParent(shaOfThisCommit);
+    }
+
+    public String getShaOfPrevTree() throws IOException
+    {
+        shaOfPrevTree = getLineOne(prevSha);
+        return shaOfPrevTree;
     }
 
     //public void setFirstToNext
