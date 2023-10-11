@@ -69,11 +69,7 @@ public class CommitTest {
     }
 
     @Test
-<<<<<<< HEAD
-        void testCreatingCommitWithFilesSimple() throws Exception {
-=======
-        void testCReatingCommit1() throws Exception {
->>>>>>> main
+        void testCreatingCommit1() throws Exception {
                 File test1 = new File("test1");
                 createFile("test1", "testing1");
                 File test2 = new File("test2");
@@ -95,7 +91,6 @@ public class CommitTest {
                 File commitFile = new File("./objects/" + commitSha);
                 assertTrue("tree does not exist", treeFile.exists());
                 assertEquals("tree has wrong contents", index.fileToString("./objects/" + treeSha),treeContents);
-<<<<<<< HEAD
                 assertTrue("commit does not exist", commitFile.exists());
                 assertEquals("commit has wrong contents", index.fileToString("./objects/" + commitSha),commitContents);
         }
@@ -152,7 +147,7 @@ public class CommitTest {
         }
 
         @Test
-        void testCreatingCommit3() throws Exception {
+        void testCreatingFourCommits() throws Exception {
                 Date date = new Date(java.lang.System.currentTimeMillis());
                 File file1 = new File("file1");
                 createFile("file1", "fileContents1");
@@ -276,13 +271,6 @@ public class CommitTest {
                 pos = str.indexOf(substr, pos + 1);
             return pos;
         }
-
-=======
-
-                assertTrue("commit does not exist", commitFile.exists());
-                assertEquals("commit has wrong contents", index.fileToString("./objects/" + commitSha),commitContents);
-        }
->>>>>>> main
     /*
     @Test
     public void testConstructorThreeCommits() throws Exception
