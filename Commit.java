@@ -14,6 +14,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Formatter;
 
+import javax.lang.model.util.ElementScanner14;
+
 public class Commit {
     private File commit;
     private String prevSha = "";
@@ -28,13 +30,17 @@ public class Commit {
     private Date date1;
 
     
-    public Commit(String prevCommitSha, String author, String summary) throws IOException {
+    public Commit(String prevCommitSha, String author, String summary) throws Exception {
         prevSha = prevCommitSha;
         File objects = new File("./objects");
         if (!objects.exists())
             objects.mkdirs();
-        
-        String sha = createTree();
+        Tree tree = new Tree();
+        if (prevCommitSha != "")
+        {
+            addPreviousTreeToCurrentTree(prevCommitSha, tree);
+        }
+        String sha = createTree(tree);
         date1 = new Date(java.lang.System.currentTimeMillis());
         commit = new File("commit");
 
@@ -139,7 +145,11 @@ public class Commit {
         return pos;
     }
 
-    public Commit(String author, String summary) throws IOException
+    public void addPreviousTreeToCurrentTree(String parentCommit, Tree tree) throws Exception {
+            tree.add("tree : " + getLineOne(parentCommit));
+    }
+
+    public Commit(String author, String summary) throws Exception
     {
         this("", author, summary);
         /*File f = new File("./objects/" + currSha);
@@ -220,8 +230,11 @@ public class Commit {
     */
     
 
-    public String createTree() throws IOException {
-        Tree tree = new Tree();
+    public String createTree(Tree tree) throws Exception {
+        writeIndexFileToTreeFile(tree);
+        File indexClear = new File("index");
+        indexClear.delete();
+        indexClear.createNewFile();
         String sha = tree.getSha();
         return sha;
     }
@@ -231,13 +244,28 @@ public class Commit {
         return timeStamp;
     }
 
-    public String getLineOne() throws IOException
+    public void writeIndexFileToTreeFile(Tree tree) throws Exception {
+        File indexFile = new File("index");
+        if (!indexFile.exists()) {
+            throw new Exception("file doesn't exist");
+        }
+        BufferedReader br = new BufferedReader(new FileReader(indexFile));
+        String line;
+        while (br.ready()) {
+            line = br.readLine();
+            tree.add(line);
+        }
+        br.close();
+        tree.writeToFile();
+    }
+
+    public String getLineOne(String prevCommitSha) throws IOException
     {
-        if (prevSha == "")
+        if (prevCommitSha == "")
         {
             return "";
         }
-        String path = "./objects/" + prevSha;
+        String path = "./objects/" + prevCommitSha;
         File file = new File (path);
         BufferedReader br = new BufferedReader(new FileReader(file));
         String ret = br.readLine();
