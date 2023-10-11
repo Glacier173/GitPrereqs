@@ -69,7 +69,7 @@ public class CommitTest {
     }
 
     @Test
-        void testCReatingCommit1() throws Exception {
+        void testCreatingCommitWithFilesSimple() throws Exception {
                 File test1 = new File("test1");
                 createFile("test1", "testing1");
                 File test2 = new File("test2");
@@ -91,10 +91,187 @@ public class CommitTest {
                 File commitFile = new File("./objects/" + commitSha);
                 assertTrue("tree does not exist", treeFile.exists());
                 assertEquals("tree has wrong contents", index.fileToString("./objects/" + treeSha),treeContents);
-
                 assertTrue("commit does not exist", commitFile.exists());
                 assertEquals("commit has wrong contents", index.fileToString("./objects/" + commitSha),commitContents);
         }
+
+        @Test
+        void testCreatingCommitWithFilesAndFolder() throws Exception {
+                File file1 = new File("file1");
+                createFile("file1", "testing1");//got this from addDirectoryTest.java
+                File file2 = new File("file2");
+                createFile("file2", "testing2");
+                Index ind = new Index();
+                ind.init();
+                Date date = new Date(java.lang.System.currentTimeMillis());
+                ind.addBlob("file1");
+                ind.addBlob("file2");
+                Commit c0 = new Commit("Wyatt", "oh wow it works maybe????");
+                File file3 = new File("file3");
+                createFile("file3", "testing3");
+                File file4 = new File("file4");
+                createFile("file4", "testing4");
+                File directory = new File("dir");
+                directory.mkdir();
+                Index index2 = new Index();
+                index2.init();
+                index2.addBlob("file3");
+                index2.addBlob("file4");
+                index2.addBlob("dir");
+                Commit c1 = new Commit(c0.getSha(), "Wonka", "Willy chocolate");
+                String file1Sha = c0.encryptPassword(ind.fileToString("file1"));
+                String file2Sha = c0.encryptPassword(ind.fileToString("file2"));
+                String treeContents = "blob : " + file2Sha + " : file2\nblob : " + file1Sha + " : file1";
+                String treeSha = c0.encryptPassword(treeContents);
+                String commitContents = treeSha + "\n" + "\n" + "\n" + "Wyatt" + "\n" + date + "\n" + "oh wow it works maybe????";
+                String newCommitContents = treeSha + "\n" + "\n" + c1.getSha() + "\n" + "Wyatt" + "\n" + date + "\n" + "oh wow it works maybe????";
+                String commitSha = c0.encryptPassword(commitContents);
+                File treeFile = new File("./objects/" + treeSha);
+                File commitFile = new File("./objects/" + commitSha);
+                String file3Sha = c1.encryptPassword(ind.fileToString("file3"));
+                String file4Sha = c1.encryptPassword(ind.fileToString("file4"));
+                String treeContents1 = "tree : " + treeSha + "\n" + "blob : " + file4Sha + " : file4" + "\n" + "blob : " + file3Sha + " : file3" + "\n" + "tree : da39a3ee5e6b4b0d3255bfef95601890afd80709 : dir";
+                String treeSha1 = c1.encryptPassword(treeContents1);
+                String newCommitContents1 = treeSha1 + "\n" + c0.getSha() + "\n" + "\n" + "Wonka" + "\n" + date+ "\n" + "Willy chocolate";
+                String newCommitSha1 = c0.encryptPassword(newCommitContents1);
+                File treeFile2 = new File("./objects/" + treeSha1);
+                File commitFile2 = new File("./objects/" + newCommitSha1);
+                assertTrue("tree doesn't exist", treeFile.exists());
+                assertEquals("contents of tree wrong", ind.fileToString("./objects/" + treeSha), treeContents);
+                assertTrue("commit1 doesn't exist", commitFile.exists());
+                assertEquals("contents of this commit wrong", ind.fileToString("./objects/" + commitSha), newCommitContents);
+                assertTrue("tree doesn't exist", treeFile2.exists());
+                assertEquals("contents of tree wrong", ind.fileToString("./objects/" + treeSha1), treeContents1);
+                assertTrue("commit2 doesn't exist", commitFile2.exists());
+                assertEquals("contents of this commit wrong", ind.fileToString("./objects/" + newCommitSha1), newCommitContents1);
+        }
+
+        @Test
+        void testCreatingCommit3() throws Exception {
+                Date date = new Date(java.lang.System.currentTimeMillis());
+                File file1 = new File("file1");
+                createFile("file1", "fileContents1");
+                File file2 = new File("file2");
+                createFile("file2", "fileContents2");
+                Index ind = new Index();
+                ind.init();
+                ind.addBlob("file1");
+                ind.addBlob("file2");
+                Commit firstCommit = new Commit("Wyatt", "first commit");
+                File f =  new File("index");
+                f.delete();
+                f.createNewFile();
+
+                File file3 = new File("file3");
+                createFile("file3", "fileContents3");
+                File file4 = new File("file4");
+                createFile("file4", "fileContents4");
+                File dir = new File("dir");
+                dir.mkdir();
+                Index ind2 = new Index();
+                ind2.init();
+                ind2.addBlob("file3");
+                ind2.addBlob("file4");
+                ind2.addBlob("dir");
+                Commit commit1 = new Commit(firstCommit.getSha(), "Wyatt", "second commit");
+                File f1 =  new File("index");
+                f1.delete();
+                f1.createNewFile();
+                File file5 = new File("file5");
+                createFile("file5", "fileContents5");
+                File file6 = new File("file6");
+                createFile("file6", "fileContents6");
+                Index ind3 = new Index();
+                ind3.init();
+                ind3.addBlob("file5");
+                ind3.addBlob("file6");
+                Commit commit2 = new Commit(commit1.getSha(), "Wyatt", "third commit");
+                File f2 =  new File("index");
+                f2.delete();
+                f2.createNewFile();
+                File file7 = new File("file7");
+                createFile("file7", "fileContents7");
+                File file8 = new File("file8");
+                createFile("file8", "fileContents8");
+                File dir2 = new File("dir2");
+                dir2.mkdir();
+                Index ind4 = new Index();
+                ind4.init();
+                ind4.addBlob("file7");
+                ind4.addBlob("file8");
+                ind4.addBlob("dir2");
+                Commit commit3 = new Commit(commit2.getSha(), "Wyatt", "fourth commit");
+                File f3 =  new File("index");
+                f3.delete();
+                f3.createNewFile();
+                //
+                /*String shaOfParent = parentCom.getSha();
+                String parentCommitContents = ind.fileToString("./objects/" + shaOfParent);
+                int i = parentCommitContents.lastIndexOf("\n");
+                int j = Commit.ordinalIndexOf(parentCommitContents, "\n", 4);
+                Commit commitWithPrevCommit = new Commit(shaOfParent, "Wyatt", "this is not a test");
+                String shaOfChild = commitWithPrevCommit.getSha();
+                Commit thirdCommit = new Commit(shaOfChild, "Willy", "explosions");
+        
+                // Testing if the childSha is updated for the Parent
+                // Read thu parent commit
+                // Get third line
+                // Verify theres actually a SHA there
+                
+                parentCommitContents = ind.fileToString("./objects/" + shaOfParent);
+                */
+                String shaOfFirstFile = firstCommit.encryptPassword(ind.fileToString("file1"));
+                String shaOfSecondFile = firstCommit.encryptPassword(ind2.fileToString("file2"));
+                String contentsOfTreeForFirstCommit = "blob : " + shaOfSecondFile + " : file2" + "\n" + "blob : " + shaOfFirstFile + " : file1";
+                String shaOfTreeForFirstCommit = firstCommit.encryptPassword(contentsOfTreeForFirstCommit);
+                String contentsForFirstCommit = shaOfTreeForFirstCommit + "\n" + "\n" + "\n" + "Wyatt" + "\n" + date + "\n" + "first commit";
+                String contentsOfFirstCommitAfterSecondCommit = shaOfTreeForFirstCommit + "\n" + "\n" + commit1.getSha() + "\n" + "Wyatt" + "\n" + date + "\n" + "first commit";
+                String shaOfFirstCommit = firstCommit.encryptPassword(contentsForFirstCommit);
+                File fileOfTreeForFirstCommit = new File("./objects/" + shaOfTreeForFirstCommit);
+                File fileOfFirstCommit = new File("./objects/" + shaOfFirstCommit);
+                String shaOfThirdFile = firstCommit.encryptPassword(ind.fileToString("file3"));
+                String shaOfFourthFile = firstCommit.encryptPassword(ind.fileToString("file4"));
+                String contentsOfTreeForSecondCommit = "tree : " + shaOfTreeForFirstCommit + "\n" + "blob : " + shaOfFourthFile + " : file4\nblob : " + shaOfThirdFile + " : file3\ntree : da39a3ee5e6b4b0d3255bfef95601890afd80709 : dir";
+                String shaOfTreeForSecondCommit = firstCommit.encryptPassword(contentsOfTreeForSecondCommit);
+                String contentsForSecondCommit = shaOfTreeForSecondCommit + "\n" + firstCommit.getSha() + "\n" + "\n" + "Wyatt" + "\n" + date + "\n" + "second commit";
+                String contentsOfSecondCommitAfterThirdCommit = shaOfTreeForSecondCommit + "\n" + firstCommit.getSha() + "\n" + commit2.getSha() + "\n" + "Wyatt" + "\n" + date + "\n" + "second commit";
+                String shaOfSecondCommit = firstCommit.encryptPassword(contentsForSecondCommit);
+                File fileOfTreeForSecondCommit = new File("./objects/" + shaOfTreeForSecondCommit);
+                File fileOfSecondCommit = new File("./objects/" + shaOfSecondCommit);
+                String shaOfFifthFile = firstCommit.encryptPassword(ind.fileToString("file5"));
+                String shaOfSixthFile = firstCommit.encryptPassword(ind.fileToString("file6"));
+                String contentsOfTreeForThirdCommit = "tree : " + shaOfTreeForSecondCommit + "\n" + "blob : " + shaOfSixthFile + " : file6" + "\n" + "blob : " + shaOfFifthFile + " : file5";
+                String shaOfTreeForThirdCommit = firstCommit.encryptPassword(contentsOfTreeForThirdCommit);
+                String contentsOfThirdCommit = shaOfTreeForThirdCommit + "\n" + commit1.getSha() + "\n" + "\n" + "Wyatt" + "\n" + date + "\n" + "third commit";
+                String contentsOfThirdCommitAfterFourthCommit = shaOfTreeForThirdCommit + "\n" + commit1.getSha() + "\n" + commit3.getSha() + "\n" + "Wyatt" + "\n" + date + "\n" + "third commit";
+                String shaOfThirdCommit = firstCommit.encryptPassword(contentsOfThirdCommit);
+                File fileOfTreeForThirdCommit = new File("./objects/" + shaOfTreeForThirdCommit);
+                File fileOfThirdCommit = new File("./objects/" + shaOfThirdCommit);
+                String shaOfSeventhFile = firstCommit.encryptPassword(ind.fileToString("file7"));
+                String shaOfEighthFile = firstCommit.encryptPassword(ind.fileToString("file8"));
+                String contentsOfTreeForFourthCommit = "tree : " + shaOfTreeForThirdCommit + "\n" + "blob : " + shaOfEighthFile + " : file8\nblob : " + shaOfSeventhFile + " : file7" + "\n" + "tree : da39a3ee5e6b4b0d3255bfef95601890afd80709 : dir2";
+                String shaOfTreeForFourthCommit = firstCommit.encryptPassword(contentsOfTreeForFourthCommit);
+                String contentsOfFourthCommit = shaOfTreeForFourthCommit + "\n" + commit2.getSha() + "\n" + "\n" + "Wyatt"  + "\n" + date + "\n" + "fourth commit";
+                String shaOfFourthCommit = firstCommit.encryptPassword(contentsOfFourthCommit);
+                File fileOfTreeForFourthCommit = new File("./objects/" + shaOfTreeForFourthCommit);
+                File fileOfFourthCommit = new File("./objects/" + shaOfFourthCommit);
+                assertEquals(ind.fileToString("./objects/" + shaOfTreeForFirstCommit), contentsOfTreeForFirstCommit);
+                assertEquals(ind.fileToString("./objects/" + shaOfFirstCommit), contentsOfFirstCommitAfterSecondCommit);
+                assertEquals(ind.fileToString("./objects/" + shaOfTreeForSecondCommit), contentsOfTreeForSecondCommit);
+                assertEquals(ind.fileToString("./objects/" + shaOfSecondCommit), contentsOfSecondCommitAfterThirdCommit);
+                assertEquals((ind.fileToString("./objects/" + shaOfTreeForThirdCommit)).substring(0,ordinalIndexOf(contentsOfTreeForThirdCommit, "\n", 3)), contentsOfTreeForThirdCommit);
+                assertEquals(ind.fileToString("./objects/" + shaOfThirdCommit), contentsOfThirdCommitAfterFourthCommit);
+                assertEquals(ind.fileToString("./objects/" + shaOfTreeForFourthCommit), contentsOfTreeForFourthCommit);
+                assertEquals(ind.fileToString("./objects/" + shaOfFourthCommit), contentsOfFourthCommit);
+        }
+
+        public static int ordinalIndexOf(String str, String substr, int n) {
+            int pos = str.indexOf(substr);
+            while (--n > 0 && pos != -1)
+                pos = str.indexOf(substr, pos + 1);
+            return pos;
+        }
+
     /*
     @Test
     public void testConstructorThreeCommits() throws Exception
