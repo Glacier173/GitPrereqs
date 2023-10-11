@@ -17,6 +17,8 @@ import java.io.FileReader;
 
 public class Tree {
     private StringBuilder sb;
+    private String currSha;
+    private String fileName;
     private String holdTreeForAddDirectory;
 
     public Tree() {
@@ -55,14 +57,15 @@ public class Tree {
         //tree.writeToFile();
     }
 
-    public void deleteFile(String prevShaTree, String line) throws Exception
+    public void deleteFile(String shaOfTree, String deleteLine) throws Exception
     {
-        line = line.substring(9,line.length());
+        deleteLine = deleteLine.substring(9,deleteLine.length());
         ArrayList<String> arr = new ArrayList<String>();
-        File prevTreeSha = new File (prevShaTree);
         Boolean isHere = false;
+        StringBuilder sb = new StringBuilder();
+        File file = new File(shaOfTree);
         String morePrevShaTree = "";
-        BufferedReader br = new BufferedReader(new FileReader(prevTreeSha));
+        BufferedReader br = new BufferedReader(new FileReader(file));
         while(br.ready())
         {
             String read = br.readLine();
@@ -70,15 +73,17 @@ public class Tree {
             {
                 morePrevShaTree = read.substring(7,47);//"tree : " is 7 characters and a sha is 40 (hence 7+40 = 47)
             }
-            if(read.contains(line))
+            else{
+                if(read.contains(deleteLine))
             {
                 isHere = true;
             }
             else
             {
-                arr.add(read);
+                sb.append(deleteLine + "\n");
             }
         }
+    }
         br.close();
         for(int i = 0; i < arr.size(); i++)
         {
@@ -86,10 +91,10 @@ public class Tree {
         }
         if (isHere == true && morePrevShaTree != "")
         {
-            add("tree : " + morePrevShaTree + "\n");
+            sb.append("tree : " + morePrevShaTree);
         }
         if (isHere == false){
-            deleteFile(morePrevShaTree, line);
+            deleteFile(morePrevShaTree, deleteLine);
         }
     }
 
