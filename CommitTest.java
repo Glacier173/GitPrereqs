@@ -13,9 +13,37 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 public class CommitTest {
+
+    @AfterAll
+    static void cleanup() throws IOException
+    {
+        File cleanObj = new File("./objects");
+        cleanObj.mkdir();
+        for (File f : cleanObj.listFiles())
+        {
+            f.delete();
+        }
+        File f1 = new File("file1");
+        File f2 = new File("file2");
+        File f3 = new File("file3");
+        File f4 = new File("file4");
+        File f5 = new File("file5");
+        File f6 = new File("file6");
+        File f7 = new File("file7");
+        File f8 = new File("file8");
+        f1.delete();
+        f2.delete();
+        f3.delete();
+        f4.delete();
+        f5.delete();
+        f6.delete();
+        f7.delete();
+        f8.delete();
+    }
 
     @Test
     void testConstructor() throws Exception {
