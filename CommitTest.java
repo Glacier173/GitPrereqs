@@ -70,29 +70,29 @@ public class CommitTest {
 
     @Test
         void testCreatingCommit1() throws Exception {
-                File test1 = new File("test1");
-                createFile("test1", "testing1");
-                File test2 = new File("test2");
-                createFile("test2", "testing2");
+                File file1 = new File("file1");
+                createFile("file1", "fileContents1");
+                File file2 = new File("file2");
+                createFile("file2", "fileContents2");
                 Index index = new Index();
                 index.init();
-                index.addBlob("test1");
-                index.addBlob("test2");
-                Commit c0 = new Commit("Bob", "this is a test");
+                index.addBlob("file1");
+                index.addBlob("file2");
+                Commit c0 = new Commit("Wyatt", "this is a test");
 
-                String test1Sha = c0.encryptPassword(index.fileToString("test1"));
-                String test2Sha = c0.encryptPassword(index.fileToString("test2"));
-                String treeContents = "blob : " + test2Sha + " : test2\nblob : " + test1Sha + " : test1";
-                String treeSha = c0.encryptPassword(treeContents);
+                String shaOfFile1 = c0.encryptPassword(index.fileToString("file1"));
+                String shaOfFile2 = c0.encryptPassword(index.fileToString("file2"));
+                String contentsOfTree = "blob : " + shaOfFile2 + " : file2" + "\n" + "blob : " + shaOfFile1 + " : file1";
+                String shaOfTree = c0.encryptPassword(contentsOfTree);
                 Date date = new Date(java.lang.System.currentTimeMillis());
-                String commitContents = treeSha + "\n\n\nBob\n" + date+ "\n" + "this is a test";
-                String commitSha = c0.encryptPassword(commitContents);
-                File treeFile = new File("./objects/" + treeSha);
-                File commitFile = new File("./objects/" + commitSha);
-                assertTrue("tree does not exist", treeFile.exists());
-                assertEquals("tree has wrong contents", index.fileToString("./objects/" + treeSha),treeContents);
-                assertTrue("commit does not exist", commitFile.exists());
-                assertEquals("commit has wrong contents", index.fileToString("./objects/" + commitSha),commitContents);
+                String commitContents = shaOfTree + "\n" + "\n" + "\n" + "Wyatt" + "\n" + date + "\n" + "this is a test";
+                String shaOfCommit = c0.encryptPassword(commitContents);
+                File fileForTree = new File("./objects/" + shaOfTree);
+                File fileForCommit = new File("./objects/" + shaOfCommit);
+                assertTrue(fileForTree.exists());
+                assertEquals(index.fileToString("./objects/" + shaOfTree),contentsOfTree);
+                assertTrue(fileForCommit.exists());
+                assertEquals(index.fileToString("./objects/" + shaOfCommit),commitContents);
         }
 
         @Test
