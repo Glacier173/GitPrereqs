@@ -242,6 +242,7 @@ public class CommitTest {
                 String shaOfSixthFile = firstCommit.encryptPassword(ind.fileToString("file6"));
                 String contentsOfTreeForThirdCommit = "tree : " + shaOfTreeForSecondCommit + "\n" + "blob : " + shaOfSixthFile + " : file6" + "\n" + "blob : " + shaOfFifthFile + " : file5";
                 String shaOfTreeForThirdCommit = firstCommit.encryptPassword(contentsOfTreeForThirdCommit);
+                //Tree.deleteFile(shaOfTreeForThirdCommit, "dir");
                 String contentsOfThirdCommit = shaOfTreeForThirdCommit + "\n" + commit1.getSha() + "\n" + "\n" + "Wyatt" + "\n" + date + "\n" + "third commit";
                 String contentsOfThirdCommitAfterFourthCommit = shaOfTreeForThirdCommit + "\n" + commit1.getSha() + "\n" + commit3.getSha() + "\n" + "Wyatt" + "\n" + date + "\n" + "third commit";
                 String shaOfThirdCommit = firstCommit.encryptPassword(contentsOfThirdCommit);

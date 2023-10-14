@@ -80,14 +80,26 @@ public class Tree {
             }
             else
             {
-                sb.append(deleteLine + "\n");
+                sb.append(read + "\n");
             }
         }
     }
         br.close();
-        for(int i = 0; i < arr.size(); i++)
+        /*for(int i = 0; i < arr.size(); i++)
         {
             add(arr.get(i));
+        }
+        */
+        String sbString = sb.toString();
+        String line = sbString.substring(0, ordinalIndexOf(sbString, "\n", 1));
+        ArrayList<String> toDelete = new ArrayList<String>();
+        toDelete.add(line);
+        for (int i = 0; i < toDelete.size(); i ++)
+        {
+            if (toDelete.get(i).contains("blob : "))
+            {
+                avoidDeletedAndEdited(shaOfTree, toDelete.get(i));
+            }
         }
         if (isHere == true && morePrevShaTree != "")
         {
@@ -96,14 +108,43 @@ public class Tree {
         if (isHere == false){
             deleteFile(morePrevShaTree, deleteLine);
         }
-        add(sb.toString());
+        //add(sb.toString());
+    }
+
+    public void avoidDeletedAndEdited(String prevTreeSha, String line) throws Exception
+    {
+        String blobOrTree = line.substring(0,4);//so lucky that this works holy ("blob" count = "tree" count)
+        if(blobOrTree.equals("tree"))
+        {
+            sb.append(line);
+            prevTreeSha = line.substring(7,47);
+        }
+        else if (blobOrTree.equals("blob"))
+        {
+            sb.append(line);
+        }
+        else if (line.contains("*edited*"))
+        {
+            editExisting(prevTreeSha, line.substring(9));//9 bc *edited* is 8 and then space!!
+        }
+        else if (line.contains("*deleted*"))
+        {
+            deleteFile(prevTreeSha, line.substring(10));//10 bc *deleted* is 9 then space!
+        }
+    }
+
+    public static int ordinalIndexOf(String str, String substr, int n) {
+        int pos = str.indexOf(substr);
+        while (--n > 0 && pos != -1)
+            pos = str.indexOf(substr, pos + 1);
+        return pos;
     }
 
     public void editExisting(String shaOfTree, String line) throws Exception
     {
-        File edited = new File(line);
+        //File edited = new File(line);
         String shaOfFile = "";
-        ArrayList<String> arr = new ArrayList<String>();
+        //ArrayList<String> arr = new ArrayList<String>();
         String morePrevTreeSha ="";
         boolean isHere = false;
         StringBuilder sb = new StringBuilder();
@@ -136,15 +177,18 @@ public class Tree {
                 sb.append("tree : " + morePrevTreeSha);//we can do this b/c we know that this tree sha is not null
             }
         }
-        for (int i = 0; i < arr.size(); i++)
+        ArrayList<String> arrToEdit = new ArrayList<String>();
+        String lineToEdit = line.substring(0, ordinalIndexOf(line, "\n", 1));
+        arrToEdit.add(lineToEdit);
+        for (int i = 0; i < arrToEdit.size(); i++)
         {
-            add(arr.get(i));
+            avoidDeletedAndEdited(shaOfTree, arrToEdit.get(i));
         }
         if(isHere == false)
         {
             editExisting(morePrevTreeSha, line);
         }
-        add(sb.toString());
+        //add(sb.toString());
     }
 
     public void remove(String string) throws Exception
