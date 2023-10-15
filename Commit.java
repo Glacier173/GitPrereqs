@@ -11,6 +11,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Formatter;
 
@@ -89,7 +91,6 @@ public class Commit {
         File f = new File("./objects/" + prevSha);
         if (f.exists())
         {
-
             Index ind = new Index();
             String parentCommitContents = ind.fileToString("./objects/" + prevSha);
             System.out.println(parentCommitContents);
@@ -235,6 +236,58 @@ public class Commit {
         fileToReset.renameTo(file);
     }
     */
+
+    public void checkout(String shaOfCommit) throws IOException
+    {
+        String shaOfTree = getLineOne(shaOfCommit);
+        ArrayList<String> hardCoded = new ArrayList<String>(Arrays.asList("dir", "dir2", "directoryTest", "directoryTestFile", "Folder", "lib", "obects", "ScreenShotsForCommitReqs", "tests", "addDirectoryTest.java", "Blob.java", "BlobTest.java", "codeConfig.json", "commit", "Commit.java", "CommitTest.java", "createTwoCommits.java", "first", "index", "Index.java", "IndexTest.java", "main.java", "README.md", "test1", "test2", "tester.java", "testFile.txt", "testFile2.txt", "Tree.java", "TreeTest.java"));
+        File f = new File(shaOfTree);
+        ArrayList<String> arr = new ArrayList<String>();
+        f.createNewFile();
+        BufferedReader br = new BufferedReader(new FileReader(f));
+        while(br.ready())
+        {
+            String read = br.readLine();
+            if (read.length() > 50)
+            {
+                if (read.contains("blob"))
+                {
+                    read = read.substring(ordinalIndexOf(read, " : " , 2)+1);
+                    arr.add(read);
+                }
+                else if (read.contains("tree"))
+                {
+                    read = read.substring(ordinalIndexOf(read, " : ", 1)+1, ordinalIndexOf(read, " : ", 2));
+                    checkout(read);
+                }
+            }
+            else if (read.length() < 50)
+            {
+                read = read.substring(ordinalIndexOf(read, " : ", 1)+1);
+                checkout(read);
+            }
+        }
+        br.close();
+        for (int i = 0; i < arr.size(); i++)
+        {
+            if (!hardCoded.contains(arr.get(i)))
+            {
+                arr.remove(arr.get(i));
+            }
+        }
+        new FileWriter(shaOfTree, false).close();
+        PrintWriter pw = new PrintWriter(f);
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < arr.size(); i++)
+        {
+            sb.append(arr.get(i));
+            sb.append("\n");
+        }
+        String write = sb.toString();
+        write = write.stripTrailing();
+        pw.write(write);
+        pw.close();
+    }
     
 
     public String createTree(Tree tree) throws Exception {
