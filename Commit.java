@@ -268,13 +268,16 @@ public class Commit {
             }
         }
         br.close();
+        ArrayList<String> tempArr = new ArrayList<String>();
         for (int i = 0; i < arr.size(); i++)
         {
+            tempArr = arr;
             if (!hardCoded.contains(arr.get(i)))
             {
-                arr.remove(arr.get(i));
+                tempArr.remove(arr.get(i));
             }
         }
+        arr = tempArr;
         new FileWriter(shaOfTree, false).close();
         PrintWriter pw = new PrintWriter(f);
         StringBuilder sb = new StringBuilder();
