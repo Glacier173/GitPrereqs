@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Formatter;
+import java.util.HashMap;
 
 import javax.lang.model.util.ElementScanner14;
 
@@ -239,59 +240,49 @@ public class Commit {
 
     public void checkout(String shaOfCommit) throws IOException
     {
-        String shaOfTree = getLineOne(shaOfCommit);
+        String rootTree = getLineOne(shaOfCommit);
+        Index ind = new Index();
+        BufferedReader br = new BufferedReader(new FileReader("./objects/" + rootTree));
+        HashMap<String, String> hMap = new HashMap<>();
         ArrayList<String> hardCoded = new ArrayList<String>(Arrays.asList("dir", "dir2", "directoryTest", "directoryTestFile", "Folder", "lib", "obects", "ScreenShotsForCommitReqs", "tests", "addDirectoryTest.java", "Blob.java", "BlobTest.java", "codeConfig.json", "commit", "Commit.java", "CommitTest.java", "createTwoCommits.java", "first", "index", "Index.java", "IndexTest.java", "main.java", "README.md", "test1", "test2", "tester.java", "testFile.txt", "testFile2.txt", "Tree.java", "TreeTest.java"));
-        File f = new File(shaOfTree);
-        ArrayList<String> arr = new ArrayList<String>();
-        f.createNewFile();
-        BufferedReader br = new BufferedReader(new FileReader(f));
-        while(br.ready())
+        File f = new File("./GitPrereqs");
+        for (File file : f.listFiles())
+        {
+            if (!hardCoded.contains(file.getName()))
+            {
+                file.delete();
+            }
+        }
+        while (br.ready())
         {
             String read = br.readLine();
-            if (read.length() > 50)
+            if (read.contains("tree"))
             {
-                if (read.contains("blob"))
+                if (read.length() > 50)
                 {
-                    read = read.substring(ordinalIndexOf(read, " : " , 2)+1);
-                    arr.add(read);
+                    File dir = new File("./GitPrereqs" + read.substring(ordinalIndexOf(read, " : ", 2), read.length()));
+                    dir.mkdir();
+                    checkout(read.substring(ordinalIndexOf(read, " : ", 1), ordinalIndexOf(read, " : ", 2)+1));
                 }
-                else if (read.contains("tree"))
+                else if (read.length() < 50)
                 {
-                    read = read.substring(ordinalIndexOf(read, " : ", 1)+1, ordinalIndexOf(read, " : ", 2));
-                    checkout(read);
+                    checkout(read.substring(ordinalIndexOf(read, " : ", 1), read.length()));
                 }
             }
-            else if (read.length() < 50)
+            else if (read.contains("blob"))
             {
-                read = read.substring(ordinalIndexOf(read, " : ", 1)+1);
-                checkout(read);
+                hMap.put(read.substring(ordinalIndexOf(read, " : ", 2)+1, read.length()), read.substring(ordinalIndexOf(read, " : ", 1), ordinalIndexOf(read, " : ", 2)+1));
             }
         }
         br.close();
-        ArrayList<String> tempArr = new ArrayList<String>();
-        for (int i = 0; i < arr.size(); i++)
+        for (String file : hMap.keySet())
         {
-            tempArr = arr;
-            if (!hardCoded.contains(arr.get(i)))
-            {
-                tempArr.remove(arr.get(i));
-            }
+            File inObjectsFolder = new File("./GitPrereqs" + file);
+            PrintWriter pw = new PrintWriter(inObjectsFolder);
+            pw.write(ind.fileToString(hMap.get(file)));
+            pw.close();
         }
-        arr = tempArr;
-        new FileWriter(shaOfTree, false).close();
-        PrintWriter pw = new PrintWriter(f);
-        StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < arr.size(); i++)
-        {
-            sb.append(arr.get(i));
-            sb.append("\n");
-        }
-        String write = sb.toString();
-        write = write.stripTrailing();
-        pw.write(write);
-        pw.close();
     }
-    
 
     public String createTree(Tree tree) throws Exception {
         writeIndexFileToTreeFile(tree);
@@ -325,7 +316,7 @@ public class Commit {
         tree.writeToFile();
     }
 
-    public String getLineOne(String prevCommitSha) throws IOException
+    public static String getLineOne(String prevCommitSha) throws IOException
     {
         if (prevCommitSha == "")
         {
